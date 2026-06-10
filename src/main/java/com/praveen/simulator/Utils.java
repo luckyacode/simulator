@@ -29,7 +29,7 @@ public class Utils {
         return mapPassenger(list);
     }
 
-    public String generatePnrLocator() {
+    public static String generatePnrLocator() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 6; i++) {

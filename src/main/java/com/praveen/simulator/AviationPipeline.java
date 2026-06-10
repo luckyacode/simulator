@@ -13,7 +13,7 @@ public class AviationPipeline {
 
     // Stage 1: Map raw profile & flight inputs into an official PNR Record
     public PnrRecord createReservation(PassengerRecord passenger, FlightInfo flight) {
-        String randomPnr = generatePnrLocator();
+        String randomPnr = Utils.generatePnrLocator();
 
         return new PnrRecord(
                 randomPnr,
@@ -78,14 +78,5 @@ public class AviationPipeline {
                 LocalDateTime.now(),
                 pnr.totalAmountPaid() > 500 // Automatically trigger upgrade eligibility for premium segments
         );
-    }
-
-    private String generatePnrLocator() {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 6; i++) {
-            sb.append(characters.charAt((int) (Math.random() * characters.length())));
-        }
-        return sb.toString();
     }
 }
