@@ -1,5 +1,6 @@
-package com.praveen.simulator.other;
+package com.praveen.simulator;
 
+import com.praveen.simulator.other.PassengerRequest;
 import lombok.SneakyThrows;
 
 import java.io.File;
@@ -27,4 +28,14 @@ public class Utils {
         }
         return mapPassenger(list);
     }
+
+    public String generatePnrLocator() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            sb.append(characters.charAt((int) (Math.random() * characters.length())));
+        }
+        return sb.toString();
+    }
+
 }

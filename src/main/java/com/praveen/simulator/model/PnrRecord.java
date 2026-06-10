@@ -5,10 +5,11 @@ import java.util.List;
 
 public record PnrRecord(
         String pnrLocator,                 // The 6-character booking reference (e.g., "X7Y2ZB")
-        List<PassengerRecord> passengers,   // Who is traveling
-        List<FlightInfo> itinerary,        // Flight segments booked
+        PassengerRecord passengers,   // Who is traveling
+        FlightInfo itinerary,        // Flight segments booked
         String ticketingStatus,            // e.g., "ISSUED", "PENDING"
         String bookingChannel,             // e.g., "WEB", "AGENCY"
+        String transactionId,
         double totalAmountPaid,
         String currency
 ) {

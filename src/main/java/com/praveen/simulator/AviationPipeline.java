@@ -1,6 +1,7 @@
 package com.praveen.simulator;
 
 
+
 import com.praveen.simulator.model.*;
 
 import java.time.LocalDate;
@@ -11,15 +12,16 @@ import java.util.List;
 public class AviationPipeline {
 
     // Stage 1: Map raw profile & flight inputs into an official PNR Record
-    public PnrRecord createReservation(PassengerBasic passenger, FlightInfo flight) {
+    public PnrRecord createReservation(PassengerRecord passenger, FlightInfo flight) {
         String randomPnr = generatePnrLocator();
 
         return new PnrRecord(
                 randomPnr,
-                List.of(passenger),
-                List.of(flight),
+                passenger,
+                flight,
                 "ISSUED",
                 "WEB",
+                   "1234",
                 749.50,
                 "USD"
         );
@@ -28,7 +30,7 @@ public class AviationPipeline {
     // Stage 2: Map PNR + Identity details into a Border Security Record (APP / APIS)
     public AppRecord processImmigrationClearance(PnrRecord pnr, String passportNum, String countryCode, String gender) {
         // Real-world systems look up passenger details by matching names from the PNR
-        PassengerBasic traveler = pnr.passengers().get(0);
+        PassengerRecord traveler = pnr.passengers();
 
         // Run automated routing security logic
         String governmentResponse = "CLEARED";
