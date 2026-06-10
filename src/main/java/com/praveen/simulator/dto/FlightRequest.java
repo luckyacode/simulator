@@ -2,18 +2,21 @@ package com.praveen.simulator.dto;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class FlightRequest {
 
     private String flightId;
     private String airline;
+    private Status status;
     private String departureAirport;
     private String departureCountry;
     private String arrivalAirport;
@@ -22,5 +25,4 @@ public class FlightRequest {
     private LocalTime departureTime;
     private LocalDate arrivalDate;
     private LocalTime arrivalTime;
-    private Status flightStatus;
 }
