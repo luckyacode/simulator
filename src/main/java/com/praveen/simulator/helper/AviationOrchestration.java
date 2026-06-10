@@ -49,7 +49,7 @@ public class AviationOrchestration {
         List<BaggageInfo> bags = new ArrayList<>();
         if (bagWeight > 0) {
             String bagBarcode = flight.getFlightId() + (int) (Math.random() * 900000 + 100000);
-            bags.add(new BaggageInfo(bagBarcode, bagWeight, flight.getDestAirport()));
+            bags.add(new BaggageInfo(bagBarcode, bagWeight, flight.getArrivalAirport()));
         }
 
         return new DcsRecord(generatedTicket, app.pnr().pnrLocator(), flight, targetSeat, seqNumber, "CHECKED_IN", bags, LocalDateTime.now(), app.pnr().totalAmountPaid() > 500 // Automatically trigger upgrade eligibility for premium segments

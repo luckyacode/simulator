@@ -65,7 +65,7 @@ public class AviationPipeline {
         List<BaggageInfo> bags = new ArrayList<>();
         if (bagWeight > 0) {
             String bagBarcode = flight.getFlightId() + (int)(Math.random() * 900000 + 100000);
-            bags.add(new BaggageInfo(bagBarcode, bagWeight, flight.getDestAirport()));
+            bags.add(new BaggageInfo(bagBarcode, bagWeight, flight.getArrivalAirport()));
         }
 
         return new DcsRecord(

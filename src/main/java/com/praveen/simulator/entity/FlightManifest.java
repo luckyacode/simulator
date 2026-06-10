@@ -1,6 +1,6 @@
 package com.praveen.simulator.entity;
 
-import com.praveen.simulator.dto.FlightStatus;
+import com.praveen.simulator.dto.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,17 +20,16 @@ public class FlightManifest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String flightId;
     private String airline;
-    private String sourceAirport;
+    private String departureAirport;
     private String departureCountry;
-    private String destAirport;
+    private String arrivalAirport;
     private String arrivalCountry;
-    private String equipment;
     private LocalDate departureDate;
     private LocalTime departureTime;
     private LocalDate arrivalDate;
     private LocalTime arrivalTime;
-    private String flightId;
-    private String status;
-    private FlightStatus flightStatus;
+    @Enumerated(value = EnumType.STRING)
+    private Status status;
 }

@@ -14,10 +14,12 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 public class FlightDetail {
     // Structural vectors from your CSV dataset
+    private String flightId;
     private String airline;
-    private String sourceAirport;
+    private String status;
+    private String departureAirport;
     private String departureCountry;
-    private String destAirport;
+    private String arrivalAirport;
     private String arrivalCountry;
     private String equipment;
 
@@ -26,16 +28,15 @@ public class FlightDetail {
     private LocalTime departureTime;
     private LocalDate arrivalDate;
     private LocalTime arrivalTime;
-    private String flightId;
-    private String status;
 
     public FlightDetail(String[] csvRow) {
         this.airline = csvRow[0];
-        this.sourceAirport = csvRow[1];
+        this.departureAirport = csvRow[1];
         this.departureCountry = csvRow[4];
-        this.destAirport = csvRow[5];
+        this.arrivalAirport = csvRow[5];
         this.arrivalCountry = csvRow[8];
         this.equipment = "Airline";
+        this.flightId = csvRow[10];
         // Execute the programmatic dynamic scheduling sequence
         generateFullSchedule();
     }
@@ -80,8 +81,8 @@ public class FlightDetail {
 
         return String.format("[%s] %s | %s (%s) DEP: %s @ %s -> %s (%s) ARR: %s @ %s | Type: %s",
                 status, flightId,
-                sourceAirport, departureCountry, departureDate.format(dateFormat), departureTime.format(timeFormat),
-                destAirport, arrivalCountry, arrivalDate.format(dateFormat), arrivalTime.format(timeFormat),
+                departureAirport, departureCountry, departureDate.format(dateFormat), departureTime.format(timeFormat),
+                arrivalAirport, arrivalCountry, arrivalDate.format(dateFormat), arrivalTime.format(timeFormat),
                 equipment);
     }
 }

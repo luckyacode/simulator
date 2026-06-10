@@ -28,8 +28,8 @@ public class EdifactRecordConverter {
         sb.append(String.format("TVL+%s:%s+%s+%s+%s++%s%s'\n",
                 primaryFlight.getDepartureTime().format(edifactDateFormat),
                 primaryFlight.getDepartureTime().format(edifactTimeFormat),
-                primaryFlight.getSourceAirport(),
-                primaryFlight.getDestAirport(),
+                primaryFlight.getDepartureAirport(),
+                primaryFlight.getArrivalAirport(),
                 primaryFlight.getFlightId(),
                 primaryFlight.getAirline(), primaryFlight.getFlightId()
         ));

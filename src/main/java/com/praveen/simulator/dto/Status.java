@@ -1,5 +1,5 @@
 package com.praveen.simulator.dto;
 
-public enum FlightStatus {
+public enum Status {
     ACTIVE, INACTIVE, SUSPEND, DAMAGED, HOLD
 }

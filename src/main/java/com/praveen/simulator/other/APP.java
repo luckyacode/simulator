@@ -52,8 +52,8 @@ public class APP {
         edifact.append(String.format("TVL+%s:%s+%s+%s+%s++%s'\n",
                 flightDetail.getDepartureDate().format(edifactDateFormat),
                 flightDetail.getDepartureTime().format(edifactTimeFormat),
-                flightDetail.getSourceAirport(),
-                flightDetail.getDestAirport(),
+                flightDetail.getDepartureAirport(),
+                flightDetail.getArrivalAirport(),
                 flightDetail.getAirline(),
                 flightDetail.getFlightId()
         ));

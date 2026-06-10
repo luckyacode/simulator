@@ -1,9 +1,8 @@
 package com.praveen.simulator.service;
 
 import com.praveen.simulator.dto.FlightRequest;
-import com.praveen.simulator.dto.FlightStatus;
+import com.praveen.simulator.dto.Status;
 import com.praveen.simulator.entity.FlightManifest;
-import com.praveen.simulator.model.AppRecord;
 import com.praveen.simulator.other.CommonMapper;
 import com.praveen.simulator.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +32,6 @@ public class FlightService {
 
     public List<FlightManifest> getActiveFlights() {
         log.info("Fetching Active flights.... ");
-        return flightRepository.findAllByStatus("ACTIVE");
+        return flightRepository.findAllByStatus(Status.ACTIVE);
     }
 }

@@ -36,7 +36,8 @@ public class Utils {
 
     @SneakyThrows
     public static List<FlightDetail> fetchFlightFromFile(int size){
-        Scanner scan = new Scanner(new File("files/international_flight_traffic.csv"));
+//        Scanner scan = new Scanner(new File("files/international_flight_traffic.csv"));
+        Scanner scan = new Scanner(new File("files/international_flight_traffic_updated.csv"));
         List<String> list = new ArrayList<>();
         scan.nextLine();
         while(scan.hasNext()){
