@@ -1,7 +1,7 @@
 package com.praveen.simulator.helper;
 
+import com.praveen.simulator.dto.PassengerRequest;
 import com.praveen.simulator.model.FlightDetail;
-import com.praveen.simulator.other.PassengerRequest;
 import lombok.SneakyThrows;
 
 import java.io.File;

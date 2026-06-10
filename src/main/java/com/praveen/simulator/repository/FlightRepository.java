@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface FlightRepository extends JpaRepository<FlightManifest,Integer> {
 
-    List<FlightManifest> findAllByStatusActive();
+    List<FlightManifest> findAllByStatus(String status);
 
 }

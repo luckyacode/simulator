@@ -1,6 +1,7 @@
 package com.praveen.simulator.other;
 
 import com.praveen.simulator.dto.FlightRequest;
+import com.praveen.simulator.dto.PassengerRequest;
 import com.praveen.simulator.entity.FlightManifest;
 import com.praveen.simulator.entity.Passenger;
 import org.mapstruct.Mapper;
