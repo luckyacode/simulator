@@ -1,6 +1,7 @@
 package com.praveen.simulator.other;
 
-import com.praveen.simulator.Utils;
+import com.praveen.simulator.helper.Utils;
+import com.praveen.simulator.entity.Passenger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

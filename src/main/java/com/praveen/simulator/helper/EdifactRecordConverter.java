@@ -1,4 +1,4 @@
-package com.praveen.simulator;
+package com.praveen.simulator.helper;
 
 import com.praveen.simulator.model.AppRecord;
 import com.praveen.simulator.model.PassengerRecord;

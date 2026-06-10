@@ -1,6 +1,7 @@
 package com.praveen.simulator.other;
 
 
+import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.model.FlightDetail;
 import lombok.Getter;
 import lombok.Setter;

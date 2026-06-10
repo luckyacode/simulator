@@ -1,4 +1,4 @@
-package com.praveen.simulator;
+package com.praveen.simulator.helper;
 
 
 import com.praveen.simulator.dto.AppRequest;

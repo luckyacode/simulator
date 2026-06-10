@@ -1,5 +1,6 @@
-package com.praveen.simulator;
+package com.praveen.simulator.controller;
 
+import com.praveen.simulator.helper.Utils;
 import com.praveen.simulator.model.FlightDetail;
 import com.praveen.simulator.other.PassengerRequest;
 import org.springframework.web.bind.annotation.GetMapping;

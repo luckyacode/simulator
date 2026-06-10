@@ -1,6 +1,6 @@
 package com.praveen.simulator.other;
 
-import com.praveen.simulator.Utils;
+import com.praveen.simulator.helper.Utils;
 
 public class Read {
     public static void main(String[] args) {

@@ -1,5 +1,6 @@
-package com.praveen.simulator;
+package com.praveen.simulator.controller;
 
+import com.praveen.simulator.service.BookingService;
 import com.praveen.simulator.dto.AppRequest;
 import com.praveen.simulator.dto.BookingRequest;
 import com.praveen.simulator.dto.DcsCheckInRequest;
