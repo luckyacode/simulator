@@ -1,8 +1,16 @@
 package com.praveen.simulator;
 
-import com.praveen.simulator.model.*;
+import com.praveen.simulator.dto.AppRequest;
+import com.praveen.simulator.dto.BookingRequest;
+import com.praveen.simulator.dto.DcsCheckInRequest;
+import com.praveen.simulator.model.AppRecord;
+import com.praveen.simulator.model.DcsRecord;
+import com.praveen.simulator.model.PnrRecord;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/booking")
@@ -11,18 +19,18 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping("/createPassengerBooking")
-    public PnrRecord creatingPassengerBooking(@RequestBody PassengerRecord passengerRecord, @RequestBody FlightInfo flightInfo,@RequestParam double amount){
-        return bookingService.createPassengerBooking(passengerRecord,flightInfo,amount);
+    public PnrRecord creatingPassengerBooking(@RequestBody BookingRequest bookingRequest){
+        return bookingService.createPassengerBooking(bookingRequest.passenger(),bookingRequest.flight(),bookingRequest.amount());
     }
 
     @PostMapping("/processAPP")
-    public AppRecord processAPP(@RequestParam PnrRecord pnr,@RequestParam String passportNum,@RequestParam String countryCode,@RequestParam String gender){
-        return bookingService.processAPPData(pnr,passportNum,countryCode,gender);
+    public AppRecord processAPP(@RequestBody AppRequest appRequest){
+        return bookingService.processAPPData(appRequest.pnr(),appRequest.passportNumber(),appRequest.issuingCountry(),appRequest.gender());
     }
 
     @PostMapping("/processDCS")
-    public DcsRecord processDCS(PnrRecord pnr, AppRecord app, FlightInfo flight, String targetSeat, double bagWeight) {
-        return bookingService.processDCSData(pnr,app,flight,targetSeat,bagWeight);
+    public DcsRecord processDCS(@RequestBody DcsCheckInRequest dcsCheckInRequest) {
+        return bookingService.processDCSData(dcsCheckInRequest.app(),dcsCheckInRequest.seatNumber(),dcsCheckInRequest.baggageWeight());
     }
 
 

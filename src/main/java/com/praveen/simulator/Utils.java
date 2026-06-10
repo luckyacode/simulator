@@ -1,5 +1,6 @@
 package com.praveen.simulator;
 
+import com.praveen.simulator.model.FlightDetail;
 import com.praveen.simulator.other.PassengerRequest;
 import lombok.SneakyThrows;
 
@@ -15,11 +16,15 @@ public class Utils {
                 .map(PassengerRequest::new).toList();
     }
 
+    public static List<FlightDetail> mapFlight(List<String> list){
+        return list.stream().map(line -> line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"))
+                .map(FlightDetail::new).toList();
+    }
+
     @SneakyThrows
     public static List<PassengerRequest> fetchPassengerFromFile(int size){
         Scanner scan = new Scanner(new File("files/people.csv"));
         List<String> list = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
         scan.nextLine();
         while(scan.hasNext()){
             if(list.size()==size)
@@ -27,6 +32,19 @@ public class Utils {
             list.add(scan.nextLine());
         }
         return mapPassenger(list);
+    }
+
+    @SneakyThrows
+    public static List<FlightDetail> fetchFlightFromFile(int size){
+        Scanner scan = new Scanner(new File("files/international_flight_traffic.csv"));
+        List<String> list = new ArrayList<>();
+        scan.nextLine();
+        while(scan.hasNext()){
+            if(list.size()==size)
+                break;
+            list.add(scan.nextLine());
+        }
+        return mapFlight(list);
     }
 
     public static String generatePnrLocator() {

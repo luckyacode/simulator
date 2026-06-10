@@ -1,6 +1,8 @@
 package com.praveen.simulator;
 
+import com.praveen.simulator.dto.AppRequest;
 import com.praveen.simulator.model.*;
+import com.praveen.simulator.model.FlightDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,9 @@ public class BookingService {
     private final AviationOrchestration aviationOrchestration;
 
 
-    public PnrRecord createPassengerBooking(PassengerRecord passengerRecord, FlightInfo flightInfo, double amount) {
+    public PnrRecord createPassengerBooking(PassengerRecord passengerRecord, FlightDetail FlightDetail, double amount) {
         log.info("Booking Service processing for Passenger Booking ....");
-        return aviationOrchestration.createReservation(passengerRecord,flightInfo,amount);
+        return aviationOrchestration.createReservation(passengerRecord,FlightDetail,amount);
     }
 
     public AppRecord processAPPData(PnrRecord pnr, String passportNum, String countryCode, String gender) {
@@ -23,8 +25,8 @@ public class BookingService {
         return aviationOrchestration.processImmigrationClearance(pnr,passportNum,countryCode,gender);
     }
 
-    public DcsRecord processDCSData(PnrRecord pnr, AppRecord app, FlightInfo flight, String targetSeat, double bagWeight) {
+    public DcsRecord processDCSData(AppRequest app,  String targetSeat, double bagWeight) {
         log.info("Booking Service processing for DCS Data ....");
-        return aviationOrchestration.performAirportCheckIn(pnr,app,flight,targetSeat,bagWeight);
+        return aviationOrchestration.performAirportCheckIn(app,targetSeat,bagWeight);
     }
 }

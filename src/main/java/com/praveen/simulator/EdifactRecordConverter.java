@@ -1,9 +1,9 @@
 package com.praveen.simulator;
 
 import com.praveen.simulator.model.AppRecord;
-import com.praveen.simulator.model.FlightInfo;
 import com.praveen.simulator.model.PassengerRecord;
 import com.praveen.simulator.model.PnrRecord;
+import com.praveen.simulator.model.FlightDetail;
 
 import java.time.format.DateTimeFormatter;
 
@@ -14,7 +14,7 @@ public class EdifactRecordConverter {
         DateTimeFormatter edifactTimeFormat = DateTimeFormatter.ofPattern("HHmm");
 
         // Grab values cleanly using new record accessors
-        FlightInfo primaryFlight = pnr.itinerary();
+        FlightDetail primaryFlight = pnr.itinerary();
         PassengerRecord mainPassenger = pnr.passengers();
 
         StringBuilder sb = new StringBuilder();
@@ -26,12 +26,12 @@ public class EdifactRecordConverter {
         // Map PNR Data
         sb.append(String.format("ORG+1A+SYSTEM+++%s'\n", pnr.pnrLocator()));
         sb.append(String.format("TVL+%s:%s+%s+%s+%s++%s%s'\n",
-                primaryFlight.departureTime().format(edifactDateFormat),
-                primaryFlight.departureTime().format(edifactTimeFormat),
-                primaryFlight.departureAirport(),
-                primaryFlight.arrivalAirport(),
-                primaryFlight.carrierCode(),
-                primaryFlight.carrierCode(), primaryFlight.flightNumber()
+                primaryFlight.getDepartureTime().format(edifactDateFormat),
+                primaryFlight.getDepartureTime().format(edifactTimeFormat),
+                primaryFlight.getSourceAirport(),
+                primaryFlight.getDestAirport(),
+                primaryFlight.getFlightId(),
+                primaryFlight.getAirline(), primaryFlight.getFlightId()
         ));
 
         // Map Passenger Data

@@ -1,8 +1,6 @@
-package com.praveen.simulator.other;
+package com.praveen.simulator.model;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Setter
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FlightDetail {
     // Structural vectors from your CSV dataset
     private String airline;
@@ -35,7 +35,7 @@ public class FlightDetail {
         this.departureCountry = csvRow[4];
         this.destAirport = csvRow[5];
         this.arrivalCountry = csvRow[8];
-
+        this.equipment = "Airline";
         // Execute the programmatic dynamic scheduling sequence
         generateFullSchedule();
     }

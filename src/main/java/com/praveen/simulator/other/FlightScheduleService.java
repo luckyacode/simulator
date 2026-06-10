@@ -1,5 +1,7 @@
 package com.praveen.simulator.other;
 
+import com.praveen.simulator.model.FlightDetail;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

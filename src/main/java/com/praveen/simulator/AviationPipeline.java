@@ -3,6 +3,7 @@ package com.praveen.simulator;
 
 
 import com.praveen.simulator.model.*;
+import com.praveen.simulator.model.FlightDetail;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ import java.util.List;
 public class AviationPipeline {
 
     // Stage 1: Map raw profile & flight inputs into an official PNR Record
-    public PnrRecord createReservation(PassengerRecord passenger, FlightInfo flight) {
+    public PnrRecord createReservation(PassengerRecord passenger, FlightDetail flight) {
         String randomPnr = Utils.generatePnrLocator();
 
         return new PnrRecord(
@@ -51,7 +52,7 @@ public class AviationPipeline {
     }
 
     // Stage 3: Map PNR + APP status into an Airport Operation Control state (DCS Record)
-    public DcsRecord performAirportCheckIn(PnrRecord pnr, AppRecord app, FlightInfo flight, String targetSeat, double bagWeight) {
+    public DcsRecord performAirportCheckIn(PnrRecord pnr, AppRecord app, FlightDetail flight, String targetSeat, double bagWeight) {
         // Fail check-in instantly if border control flagged immigration profile
         if (app.clearanceStatus().equals("REJECTED")) {
             throw new IllegalStateException("Security Denied: DCS check-in blocked by border control protocol.");
@@ -63,8 +64,8 @@ public class AviationPipeline {
         // Map baggage elements
         List<BaggageInfo> bags = new ArrayList<>();
         if (bagWeight > 0) {
-            String bagBarcode = flight.carrierCode() + (int)(Math.random() * 900000 + 100000);
-            bags.add(new BaggageInfo(bagBarcode, bagWeight, flight.arrivalAirport()));
+            String bagBarcode = flight.getFlightId() + (int)(Math.random() * 900000 + 100000);
+            bags.add(new BaggageInfo(bagBarcode, bagWeight, flight.getDestAirport()));
         }
 
         return new DcsRecord(

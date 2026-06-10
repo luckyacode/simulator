@@ -1,6 +1,7 @@
 package com.praveen.simulator;
 
 import com.praveen.simulator.model.*;
+import com.praveen.simulator.model.FlightDetail;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +11,7 @@ public class MainApp {
 
         // Step 1: Create your core structural building blocks
         PassengerRecord passengerInput = new PassengerRecord("Chris", "Russell", "vhill@example.net", "633-913-4354");
-        FlightInfo flightInput = new FlightInfo("2B", "849", "GYD", "NBC", LocalDateTime.now().plusDays(1).withHour(9).withMinute(15));
+        FlightDetail flightInput = new FlightDetail(new String[]{"2B", "849", "GYD", "NBC", LocalDateTime.now().plusDays(1).withHour(9).withMinute(15).toString()});
 
         System.out.println("====== STEP 1: INITIALIZING PNR RESERVATION ======");
         PnrRecord customerPnr = pipeline.createReservation(passengerInput, flightInput);
