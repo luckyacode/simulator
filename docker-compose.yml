@@ -16,7 +16,7 @@ services:
     image: dpage/pgadmin4:latest
     container_name: pgadmin_service
     ports:
-      - "8080:80"  # Map pgAdmin to port 8080 on your host machine
+      - "8083:80"  # Map pgAdmin to port 8080 on your host machine
     environment:
       PGADMIN_DEFAULT_EMAIL: "admin@admin.com"  # Change this to your desired login email
       PGADMIN_DEFAULT_PASSWORD: "admin"          # Change this to your desired login password

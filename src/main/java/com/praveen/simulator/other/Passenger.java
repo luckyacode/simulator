@@ -1,4 +1,4 @@
-package com.praveen.simulator;
+package com.praveen.simulator.other;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

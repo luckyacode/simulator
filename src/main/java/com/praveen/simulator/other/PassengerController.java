@@ -1,4 +1,4 @@
-package com.praveen.simulator;
+package com.praveen.simulator.other;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

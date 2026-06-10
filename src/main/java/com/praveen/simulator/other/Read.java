@@ -1,4 +1,4 @@
-package com.praveen.simulator;
+package com.praveen.simulator.other;
 
 public class Read {
     public static void main(String[] args) {

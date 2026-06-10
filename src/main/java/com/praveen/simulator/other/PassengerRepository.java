@@ -1,4 +1,4 @@
-package com.praveen.simulator;
+package com.praveen.simulator.other;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

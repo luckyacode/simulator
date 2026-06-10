@@ -1,4 +1,4 @@
-package com.praveen.simulator;
+package com.praveen.simulator.other;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

@@ -1,5 +1,6 @@
-package com.praveen.simulator;
+package com.praveen.simulator.other;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,6 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@Data
 public class PassengerRequest {
     private int id;
     private String fullName;
