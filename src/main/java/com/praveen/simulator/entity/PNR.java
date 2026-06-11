@@ -1,6 +1,5 @@
 package com.praveen.simulator.entity;
 
-
 import com.praveen.simulator.dto.BookingClass;
 import com.praveen.simulator.dto.Channel;
 import com.praveen.simulator.dto.TicketStatus;
@@ -22,14 +21,16 @@ public class PNR {
     private int id;
     private String pnrId;
     @OneToOne
-    private Passenger passengers;
+    @JoinColumn(name = "passenger_id")
+    private Passenger passenger;
     @ManyToOne
+    @JoinColumn(name = "flight_id")
     private FlightManifest flight;
     @Enumerated(value = EnumType.STRING)
     private TicketStatus ticketStatus;
     @Enumerated(value = EnumType.STRING)
     private Channel bookingChannel;
-    private LocalDateTime bookingTime;
+    private LocalDateTime bookingDateTime;
     private BookingClass bookingClass;
     private String agencyId;
     private String bookingStatus;

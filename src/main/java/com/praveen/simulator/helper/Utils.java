@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Utils {
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -66,4 +67,8 @@ public class Utils {
         return objectMapper.readValue(json,targetClass);
     }
 
+
+    public static String generateUniqueId() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
 }

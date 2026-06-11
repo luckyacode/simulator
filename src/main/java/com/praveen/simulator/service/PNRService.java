@@ -19,6 +19,11 @@ public class PNRService {
     private final PNRRepository pnrRepository;
 
     @SneakyThrows
+    public PNR getPNRById(String id){
+        return pnrRepository.findBypnrId(id).orElseThrow(()->new Exception("not found pnr"));
+    }
+
+    @SneakyThrows
     public void handleVettingResult(CheckInResponse response) {
         PNR pnr = pnrRepository.findBypnrId(response.getPnrId()).orElseThrow(()-> new Exception("pnr not found.."));
         var clearance = response.getGovernmentClearanceResponse();

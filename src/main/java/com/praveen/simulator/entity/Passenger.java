@@ -1,5 +1,6 @@
 package com.praveen.simulator.entity;
 
+import com.praveen.simulator.dto.DocumentDetails;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,5 +24,7 @@ public class Passenger {
     private String phone;
     private String city;
     private String country;
+    @Embedded
+    private DocumentDetails documentDetails;
 
 }

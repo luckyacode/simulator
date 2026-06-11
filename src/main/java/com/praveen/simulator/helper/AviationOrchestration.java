@@ -10,6 +10,8 @@ import com.praveen.simulator.kafka.KafkaService;
 import com.praveen.simulator.model.*;
 import com.praveen.simulator.model.FlightDetail;
 import com.praveen.simulator.service.CheckInResponseService;
+import com.praveen.simulator.service.PNRService;
+import com.praveen.simulator.service.PassengerService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,8 @@ import java.util.UUID;
 public class AviationOrchestration {
     private final KafkaService kafkaService;
     private final CheckInResponseService checkInResponseService;
+    private final PassengerService passengerService;
+    private final PNRService pnrService;
 
     public PNRRequest createReservation(Passenger passenger, String flightId, double amount) {
         String randomPnr = Utils.generatePnrLocator();
@@ -53,6 +57,10 @@ public class AviationOrchestration {
     }
 
     public void performAirportCheckIn(CheckInRequest checkInRequest){
+        Passenger passenger = pnrService.getPNRById(checkInRequest.getPnrId()).getPassenger();
+        passenger.setDocumentDetails(checkInRequest.getDocumentDetails());
+        passengerService.update(passenger);
+        log.info("Document updated for passenger : {}",passenger);
         kafkaService.checkInOnAirport(checkInRequest);
     }
 
