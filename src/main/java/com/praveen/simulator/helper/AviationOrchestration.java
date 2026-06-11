@@ -27,7 +27,7 @@ public class AviationOrchestration {
     public PNRRequest createReservation(Passenger passenger, String flightId, double amount) {
         String randomPnr = Utils.generatePnrLocator();
         PNRRequest pnrRequest = PNRRequest.builder().
-                PNRId(randomPnr).bookingDateTime(LocalDateTime.now().toString()).bookingStatus("CONFIRMED").flightId(flightId).passengerId(String.valueOf(passenger.getId())).ticketStatus(TicketStatus.CONFIRM).bookingChannel(Channel.AIRLINE).bookingClass(BookingClass.J).agencyId("AGENT-01").transactionId(UUID.randomUUID().toString()).totalAmount(amount).currency("INR").build();
+                PNRId(randomPnr).bookingDateTime(LocalDateTime.now()).bookingStatus("CONFIRMED").flightId(flightId).passengerId(passenger.getId()).ticketStatus(TicketStatus.CONFIRM).bookingChannel(Channel.AIRLINE).bookingClass(BookingClass.J).agencyId("AGENT-01").transactionId(UUID.randomUUID().toString()).totalAmount(amount).currency("INR").build();
         log.info("PNR request created for : {}",pnrRequest);
         log.info("Publishing message for PNRRequest ...");
         kafkaService.sendPNRMessage(pnrRequest);

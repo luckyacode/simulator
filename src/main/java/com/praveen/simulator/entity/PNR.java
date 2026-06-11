@@ -1,12 +1,15 @@
 package com.praveen.simulator.entity;
 
 
+import com.praveen.simulator.dto.BookingClass;
 import com.praveen.simulator.dto.Channel;
 import com.praveen.simulator.dto.TicketStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Table
 @NoArgsConstructor
@@ -26,7 +29,11 @@ public class PNR {
     private TicketStatus ticketStatus;
     @Enumerated(value = EnumType.STRING)
     private Channel bookingChannel;
+    private LocalDateTime bookingTime;
+    private BookingClass bookingClass;
+    private String agencyId;
+    private String bookingStatus;
     private String transactionId;
-    private double totalAmountPaid;
+    private double totalAmount;
     private String currency;
 }
