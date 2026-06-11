@@ -29,12 +29,24 @@ public class KafkaPublisher {
     }
 
     public void sendCheckInRequestMessage(String clearanceId, String json) {
-        CompletableFuture<SendResult<String, String>> result = kafkaTemplate.send("checkin-topic",clearanceId,json);
+        CompletableFuture<SendResult<String, String>> result = kafkaTemplate.send("checkin-topic", clearanceId, json);
         result.whenComplete((((object, exception) -> {
-            if(exception==null)
+            if (exception == null)
                 log.info("Successfully published kafka message to  : checkin-topic");
             else {
-                log.error("failed to  published kafka message to  : checkin-topic ",exception);
+                log.error("failed to  published kafka message to  : checkin-topic ", exception);
+            }
+        })));
+    }
+
+    public void sendDCSMessage(String key, String json) {
+        log.info("Publish to DCS request : {}",json);
+        CompletableFuture<SendResult<String, String>> result = kafkaTemplate.send("dcs-topic",key,json);
+        result.whenComplete((((object, exception) -> {
+            if(exception==null)
+                log.info("Successfully published kafka message to  : dcs-topic");
+            else {
+                log.error("failed to  published kafka message to  : dcs-topic ",exception);
             }
         })));
 
