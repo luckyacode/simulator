@@ -1,17 +1,12 @@
 package com.praveen.simulator.controller;
 
-import com.praveen.simulator.dto.PNRRequest;
+import com.praveen.simulator.dto.*;
+import com.praveen.simulator.entity.CheckInResponse;
 import com.praveen.simulator.service.BookingService;
-import com.praveen.simulator.dto.AppRequest;
-import com.praveen.simulator.dto.BookingRequest;
-import com.praveen.simulator.dto.DcsCheckInRequest;
 import com.praveen.simulator.model.AppRecord;
 import com.praveen.simulator.model.DcsRecord;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/booking")
@@ -24,10 +19,26 @@ public class BookingController {
         return bookingService.createPassengerBooking(bookingRequest.passenger(),bookingRequest.flightId(),bookingRequest.amount());
     }
 
-    @PostMapping("/processAPP")
-    public AppRecord processAPP(@RequestBody AppRequest appRequest){
-        return bookingService.processAPPData(appRequest.pnr(),appRequest.passportNumber(),appRequest.issuingCountry(),appRequest.gender());
+    @PostMapping("/checkIn")
+    public String checkInService(@RequestBody CheckInRequest checkInRequest){
+        bookingService.checkInPassenger(checkInRequest);
+        return "Success CheckIn Process";
     }
+
+    @GetMapping("/checkInStatusByClearanceId/{clearanceId}")
+    public CheckInResponse checkInStatusByClearanceId(@PathVariable String clearanceId){
+        return bookingService.checkInStatusByClearanceId(clearanceId);
+    }
+
+    @GetMapping("/checkInStatusByPassengerId/{passengerId}")
+    public CheckInResponse checkInStatusByPassengerId(@PathVariable String passengerId){
+        return bookingService.checkInStatusByPassengerId(passengerId);
+    }
+
+//    @PostMapping("/processAPP")
+//    public AppRecord processAPP(@RequestBody AppRequest appRequest){
+//        return bookingService.processAPPData(appRequest.pnr(),appRequest.passportNumber(),appRequest.issuingCountry(),appRequest.gender());
+//    }
 
     @PostMapping("/processDCS")
     public DcsRecord processDCS(@RequestBody DcsCheckInRequest dcsCheckInRequest) {

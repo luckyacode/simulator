@@ -1,5 +1,6 @@
 package com.praveen.simulator.kafka;
 
+import com.praveen.simulator.dto.CheckInRequest;
 import com.praveen.simulator.dto.PNRRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,5 +26,17 @@ public class KafkaPublisher {
                 log.error("failed to  published kafka message to  : pnr-topic ",exception);
             }
         })));
+    }
+
+    public void sendCheckInRequestMessage(String clearanceId, String json) {
+        CompletableFuture<SendResult<String, String>> result = kafkaTemplate.send("checkin-topic",clearanceId,json);
+        result.whenComplete((((object, exception) -> {
+            if(exception==null)
+                log.info("Successfully published kafka message to  : checkin-topic");
+            else {
+                log.error("failed to  published kafka message to  : checkin-topic ",exception);
+            }
+        })));
+
     }
 }

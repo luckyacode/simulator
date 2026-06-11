@@ -1,8 +1,10 @@
 package com.praveen.simulator.service;
 
 import com.praveen.simulator.dto.AppRequest;
+import com.praveen.simulator.dto.CheckInRequest;
 import com.praveen.simulator.dto.PNRRequest;
 import com.praveen.simulator.dto.PassengerRequest;
+import com.praveen.simulator.entity.CheckInResponse;
 import com.praveen.simulator.entity.FlightManifest;
 import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.helper.AviationOrchestration;
@@ -11,6 +13,8 @@ import com.praveen.simulator.model.FlightDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +40,21 @@ public class BookingService {
     public DcsRecord processDCSData(AppRequest app,  String targetSeat, double bagWeight) {
         log.info("Booking Service processing for DCS Data ....");
         return aviationOrchestration.performAirportCheckIn(app,targetSeat,bagWeight);
+    }
+
+    public void checkInPassenger(CheckInRequest checkInRequest) {
+        log.info("checkIn request initiated....{} ",checkInRequest);
+        checkInRequest.setClearanceId(UUID.randomUUID().toString());
+        aviationOrchestration.performAirportCheckIn(checkInRequest);
+    }
+
+    public CheckInResponse checkInStatusByClearanceId(String clearanceId) {
+        log.info("fetching checkIn Resposne for clearance {} ",clearanceId);
+        return aviationOrchestration.performAirportCheckInResponseByClearance(clearanceId);
+    }
+
+    public CheckInResponse checkInStatusByPassengerId(String passengerId) {
+        log.info("fetching checkIn Resposne for passenger {} ",passengerId);
+        return aviationOrchestration.performAirportCheckInResponseByPassenger(passengerId);
     }
 }
