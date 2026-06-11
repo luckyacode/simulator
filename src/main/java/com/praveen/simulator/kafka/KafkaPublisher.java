@@ -14,10 +14,10 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 @Slf4j
 public class KafkaPublisher {
-    private final KafkaTemplate<String,Object> kafkaTemplate;
+    private final KafkaTemplate<String,String> kafkaTemplate;
 
-    public void publishPNRRequest(@Payload PNRRequest pnrRequest){
-        CompletableFuture<SendResult<String, Object>> result = kafkaTemplate.send("pnr-topic",pnrRequest);
+    public void publishPNRRequest(String id,String pnrRequest){
+        CompletableFuture<SendResult<String, String>> result = kafkaTemplate.send("pnr-topic",id,pnrRequest);
         result.whenComplete((((object, exception) -> {
             if(exception==null)
                 log.info("Successfully published kafka message to  : pnr-topic");

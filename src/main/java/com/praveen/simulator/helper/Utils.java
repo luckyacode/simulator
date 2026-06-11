@@ -3,6 +3,7 @@ package com.praveen.simulator.helper;
 import com.praveen.simulator.dto.PassengerRequest;
 import com.praveen.simulator.model.FlightDetail;
 import lombok.SneakyThrows;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Utils {
-
+    private static ObjectMapper objectMapper = new ObjectMapper();
     public static List<PassengerRequest> mapPassenger(List<String> list){
         return list.stream().map(line -> line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"))
                 .map(PassengerRequest::new).toList();
@@ -55,6 +56,14 @@ public class Utils {
             sb.append(characters.charAt((int) (Math.random() * characters.length())));
         }
         return sb.toString();
+    }
+
+    public static<T> String objectToJson(T object){
+        return objectMapper.writeValueAsString(object);
+    }
+
+    public static<T> T jsonToObject(String json,Class<T> targetClass){
+        return objectMapper.readValue(json,targetClass);
     }
 
 }

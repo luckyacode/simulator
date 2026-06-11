@@ -5,6 +5,7 @@ import com.praveen.simulator.dto.*;
 import com.praveen.simulator.entity.FlightManifest;
 import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.kafka.KafkaPublisher;
+import com.praveen.simulator.kafka.KafkaService;
 import com.praveen.simulator.model.*;
 import com.praveen.simulator.model.FlightDetail;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class AviationOrchestration {
-    private final KafkaPublisher kafkaPublisher;
+    private final KafkaService kafkaService;
 
     public PNRRequest createReservation(Passenger passenger, String flightId, double amount) {
         String randomPnr = Utils.generatePnrLocator();
@@ -29,7 +30,7 @@ public class AviationOrchestration {
                 PNRId(randomPnr).bookingDateTime(LocalDateTime.now().toString()).bookingStatus("CONFIRMED").flightId(flightId).passengerId(String.valueOf(passenger.getId())).ticketStatus(TicketStatus.CONFIRM).bookingChannel(Channel.AIRLINE).bookingClass(BookingClass.J).agencyId("AGENT-01").transactionId(UUID.randomUUID().toString()).totalAmount(amount).currency("INR").build();
         log.info("PNR request created for : {}",pnrRequest);
         log.info("Publishing message for PNRRequest ...");
-        kafkaPublisher.publishPNRRequest(pnrRequest);
+        kafkaService.sendPNRMessage(pnrRequest);
         return pnrRequest;
     }
 
