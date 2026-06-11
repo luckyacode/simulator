@@ -1,6 +1,9 @@
 package com.praveen.simulator.service;
 
 import com.praveen.simulator.dto.AppRequest;
+import com.praveen.simulator.dto.PassengerRequest;
+import com.praveen.simulator.entity.FlightManifest;
+import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.helper.AviationOrchestration;
 import com.praveen.simulator.model.*;
 import com.praveen.simulator.model.FlightDetail;
@@ -14,11 +17,15 @@ import org.springframework.stereotype.Service;
 public class BookingService {
 
     private final AviationOrchestration aviationOrchestration;
+    private final FlightService flightService;
+    private final PassengerService passengerService;
 
 
-    public PnrRecord createPassengerBooking(PassengerRecord passengerRecord, FlightDetail FlightDetail, double amount) {
+    public PnrRecord createPassengerBooking(PassengerRequest passengerRequest, String flightId, double amount) {
         log.info("Booking Service processing for Passenger Booking ....");
-        return aviationOrchestration.createReservation(passengerRecord,FlightDetail,amount);
+        FlightManifest flightManifest = flightService.getFlightByFlightId(flightId);
+        Passenger passenger = passengerService.addPassenger(passengerRequest);
+        return aviationOrchestration.createReservation(passenger,flightManifest,amount);
     }
 
     public AppRecord processAPPData(PnrRecord pnr, String passportNum, String countryCode, String gender) {

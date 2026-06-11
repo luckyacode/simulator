@@ -21,7 +21,7 @@ public class BookingController {
 
     @PostMapping("/createPassengerBooking")
     public PnrRecord creatingPassengerBooking(@RequestBody BookingRequest bookingRequest){
-        return bookingService.createPassengerBooking(bookingRequest.passenger(),bookingRequest.flight(),bookingRequest.amount());
+        return bookingService.createPassengerBooking(bookingRequest.passenger(),bookingRequest.flightId(),bookingRequest.amount());
     }
 
     @PostMapping("/processAPP")

@@ -2,6 +2,8 @@ package com.praveen.simulator.helper;
 
 
 import com.praveen.simulator.dto.AppRequest;
+import com.praveen.simulator.entity.FlightManifest;
+import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.model.*;
 import com.praveen.simulator.model.FlightDetail;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,7 @@ import java.util.UUID;
 @Service
 public class AviationOrchestration {
 
-    public PnrRecord createReservation(PassengerRecord passenger, FlightDetail flight, double amount) {
+    public PnrRecord createReservation(Passenger passenger, FlightManifest flight, double amount) {
         String randomPnr = Utils.generatePnrLocator();
 
         return new PnrRecord(randomPnr, passenger,
@@ -24,7 +26,7 @@ public class AviationOrchestration {
     }
 
     public AppRecord processImmigrationClearance(PnrRecord pnr, String passportNum, String countryCode, String gender) {
-        PassengerRecord traveler = pnr.passengers();
+        Passenger traveler = pnr.passengers();
         String governmentResponse = "CLEARED";
         if (passportNum.startsWith("X") || countryCode.equals("REJ")) {
             governmentResponse = "MANUAL_CHECK";
@@ -37,7 +39,7 @@ public class AviationOrchestration {
     }
 
     public DcsRecord performAirportCheckIn(AppRequest app, String targetSeat, double bagWeight) {
-        FlightDetail flight = app.pnr().itinerary();
+        FlightManifest flight = app.pnr().itinerary();
         // Fail check-in instantly if border control flagged immigration profile
 //        if (app.clearanceStatus().equals("REJECTED")) {
 //            throw new IllegalStateException("Security Denied: DCS check-in blocked by border control protocol.");

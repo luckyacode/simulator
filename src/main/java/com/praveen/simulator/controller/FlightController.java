@@ -4,10 +4,7 @@ import com.praveen.simulator.dto.FlightRequest;
 import com.praveen.simulator.entity.FlightManifest;
 import com.praveen.simulator.service.FlightService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,6 +22,11 @@ public class FlightController {
     @PostMapping("/getAllFlights")
     public List<FlightManifest> getAllFlights(){
         return flightService.getAllFlights();
+    }
+
+    @PostMapping("/getFlightById{flightId}")
+    public FlightManifest getFlightById(@PathVariable String flightId){
+        return flightService.getFlightByFlightId(flightId);
     }
 
     @PostMapping("/getActiveFlights")

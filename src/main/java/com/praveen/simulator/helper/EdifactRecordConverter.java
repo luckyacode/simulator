@@ -1,5 +1,7 @@
 package com.praveen.simulator.helper;
 
+import com.praveen.simulator.entity.FlightManifest;
+import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.model.AppRecord;
 import com.praveen.simulator.model.PassengerRecord;
 import com.praveen.simulator.model.PnrRecord;
@@ -14,8 +16,8 @@ public class EdifactRecordConverter {
         DateTimeFormatter edifactTimeFormat = DateTimeFormatter.ofPattern("HHmm");
 
         // Grab values cleanly using new record accessors
-        FlightDetail primaryFlight = pnr.itinerary();
-        PassengerRecord mainPassenger = pnr.passengers();
+        FlightManifest primaryFlight = pnr.itinerary();
+        Passenger mainPassenger = pnr.passengers();
 
         StringBuilder sb = new StringBuilder();
 
@@ -35,7 +37,7 @@ public class EdifactRecordConverter {
         ));
 
         // Map Passenger Data
-        sb.append(String.format("TIF+%s+%s'\n", mainPassenger.lastName().toUpperCase(), mainPassenger.firstName().toUpperCase()));
+        sb.append(String.format("TIF+%s+%s'\n", mainPassenger.getLastName().toUpperCase(), mainPassenger.getFirstName().toUpperCase()));
         sb.append(String.format("NAT+2+%s'\n", app.nationality()));
 
         // Map APIS / Secure Flight Record details

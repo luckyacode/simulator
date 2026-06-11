@@ -6,10 +6,12 @@ import com.praveen.simulator.entity.FlightManifest;
 import com.praveen.simulator.other.CommonMapper;
 import com.praveen.simulator.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,12 @@ public class FlightService {
     public List<FlightManifest> getAllFlights() {
         log.info("Fetching All flights.... ");
         return flightRepository.findAll();
+    }
+
+    @SneakyThrows
+    public FlightManifest getFlightByFlightId(String flightId) {
+        log.info("Searching flight by id....: {}",flightId);
+        return flightRepository.findByFlightId(flightId).orElseThrow(()-> new Exception("Flight not found with id : "+flightId));
     }
 
     public List<FlightManifest> getActiveFlights() {
