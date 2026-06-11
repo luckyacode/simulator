@@ -24,9 +24,8 @@ public class BookingService {
 
     public PNRRequest createPassengerBooking(PassengerRequest passengerRequest, String flightId, double amount) {
         log.info("Booking Service processing for Passenger Booking ....");
-        FlightManifest flightManifest = flightService.getFlightByFlightId(flightId);
         Passenger passenger = passengerService.addPassenger(passengerRequest);
-        return aviationOrchestration.createReservation(passenger,flightManifest,amount);
+        return aviationOrchestration.createReservation(passenger,flightId,amount);
     }
 
     public AppRecord processAPPData(PnrRecord pnr, String passportNum, String countryCode, String gender) {

@@ -7,7 +7,6 @@ import com.praveen.simulator.dto.BookingRequest;
 import com.praveen.simulator.dto.DcsCheckInRequest;
 import com.praveen.simulator.model.AppRecord;
 import com.praveen.simulator.model.DcsRecord;
-import com.praveen.simulator.model.PnrRecord;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

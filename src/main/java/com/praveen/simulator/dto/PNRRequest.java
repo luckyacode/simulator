@@ -1,14 +1,12 @@
 package com.praveen.simulator.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
+@Data
 public class PNRRequest {
     private String PNRId;
     private String bookingDateTime;
