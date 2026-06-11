@@ -1,5 +1,6 @@
 package com.praveen.simulator.controller;
 
+import com.praveen.simulator.dto.PNRRequest;
 import com.praveen.simulator.service.BookingService;
 import com.praveen.simulator.dto.AppRequest;
 import com.praveen.simulator.dto.BookingRequest;
@@ -20,7 +21,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping("/createPassengerBooking")
-    public PnrRecord creatingPassengerBooking(@RequestBody BookingRequest bookingRequest){
+    public PNRRequest creatingPassengerBooking(@RequestBody BookingRequest bookingRequest){
         return bookingService.createPassengerBooking(bookingRequest.passenger(),bookingRequest.flightId(),bookingRequest.amount());
     }
 
