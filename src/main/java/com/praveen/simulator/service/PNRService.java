@@ -3,6 +3,7 @@ package com.praveen.simulator.service;
 import com.praveen.simulator.dto.AuthorityDirection;
 import com.praveen.simulator.entity.CheckInResponse;
 import com.praveen.simulator.entity.PNR;
+import com.praveen.simulator.helper.AirlineException;
 import com.praveen.simulator.repository.PNRRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -20,12 +21,12 @@ public class PNRService {
 
     @SneakyThrows
     public PNR getPNRById(String id){
-        return pnrRepository.findBypnrId(id).orElseThrow(()->new Exception("not found pnr"));
+        return pnrRepository.findBypnrId(id).orElseThrow(()->AirlineException.badRequest("not found pnr"));
     }
 
     @SneakyThrows
     public void handleVettingResult(CheckInResponse response) {
-        PNR pnr = pnrRepository.findBypnrId(response.getPnrId()).orElseThrow(()-> new Exception("pnr not found.."));
+        PNR pnr = pnrRepository.findBypnrId(response.getPnrId()).orElseThrow(()-> AirlineException.badRequest("pnr not found.."));
         var clearance = response.getGovernmentClearanceResponse();
 
         // 1. Check if the government issued a hard "Do Not Board" (DNL)

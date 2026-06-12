@@ -71,13 +71,13 @@ public class AviationOrchestration {
     @SneakyThrows
     public CheckInResponse performAirportCheckInResponseByClearance(String clearanceId) {
       return checkInResponseService.getCheckInResponseByClearanceId(clearanceId)
-              .orElseThrow(()->new Exception("CheckIn is still in progress...."));
+              .orElseThrow(()->AirlineException.badRequest("CheckIn is still in progress...."));
     }
 
     @SneakyThrows
     public CheckInResponse performAirportCheckInResponseByPassenger(String passengerId) {
       return checkInResponseService.getCheckInResponseByPassengerId(passengerId)
-              .orElseThrow(()->new Exception("CheckIn is still in progress...."));
+              .orElseThrow(()->AirlineException.badRequest("CheckIn is still in progress...."));
     }
 
 //    public DcsRecord performAirportCheckIn(AppRequest app, String targetSeat, double bagWeight) {

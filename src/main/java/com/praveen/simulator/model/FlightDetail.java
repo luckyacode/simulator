@@ -44,7 +44,7 @@ public class FlightDetail {
     private void generateFullSchedule() {
         // 1. Unique Flight identifier
         int randomNum = (int) (Math.random() * 900) + 100;
-        this.flightId = this.airline + "-" + randomNum;
+//        this.flightId = this.airline + "-" + randomNum;
 
         // 2. Schedule Departure (For example, assume flights are generated for "Today")
         int hour = (int) (Math.random() * 24);

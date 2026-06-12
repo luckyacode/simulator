@@ -21,8 +21,7 @@ public class BookingController {
 
     @PostMapping("/checkIn")
     public String checkInService(@RequestBody CheckInRequest checkInRequest){
-        bookingService.checkInPassenger(checkInRequest);
-        return "Success CheckIn Process";
+        return bookingService.checkInPassenger(checkInRequest);
     }
 
     @GetMapping("/checkInStatusByClearanceId/{clearanceId}")

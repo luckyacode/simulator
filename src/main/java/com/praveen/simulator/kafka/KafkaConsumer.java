@@ -39,17 +39,23 @@ public class KafkaConsumer {
         pnrService.handleVettingResult(checkInResponse);
         PNR pnr = pnrService.getPNRById(checkInResponse.getPnrId());
         FlightManifest flight = pnr.getFlight();
-        APP app = APP.builder().appId(Utils.generateUniqueId()).pnrId(checkInResponse.getPnrId()).
-                flightId(flight.getFlightId()).departurePort(flight.getDepartureAirport()).
-                arrivalPort(flight.getArrivalAirport()).
-                passportNumber(Optional.ofNullable(pnr.getPassenger())
-                        .map(Passenger::getDocumentDetails)
-                        .map(DocumentDetails::getPassportNumber)
-                        .orElse(null)).
-                createdDateTime(LocalDateTime.now()).governmentClearanceResponse(checkInResponse.getGovernmentClearanceResponse()).processingStatus(AppProcessingStatus.PROCESSED).build();
-        log.info("APP Message is prepared ");
-        log.info("APP Message is saved : {}",appRepository.save(app));
-        DCSRequest dcsRequest = DCSRequest.builder().flightId(flight.getFlightId()).pnrId(checkInResponse.getPnrId()).passengerId(String.valueOf(pnr.getPassenger().getId())).build();
+
+        if (appRepository.findByGovernmentClearanceResponse_PassengerId(String.valueOf(pnr.getPassenger().getId())).isEmpty()) {
+            APP app = APP.builder().appId(Utils.generateUniqueId()).pnrId(checkInResponse.getPnrId()).
+                    flightId(flight.getFlightId()).departurePort(flight.getDepartureAirport()).
+                    arrivalPort(flight.getArrivalAirport()).
+                    passportNumber(Optional.ofNullable(pnr.getPassenger())
+                            .map(Passenger::getDocumentDetails)
+                            .map(DocumentDetails::getPassportNumber)
+                            .orElse(null)).
+                    createdDateTime(LocalDateTime.now()).governmentClearanceResponse(checkInResponse.getGovernmentClearanceResponse()).processingStatus(AppProcessingStatus.PROCESSED).build();
+            log.info(" NEW APP Message is saved : {}", appRepository.save(app));
+        } else {
+            log.info(" Existing APP Message is present");
+        }
+
+        DCSRequest dcsRequest = DCSRequest.builder().flightId(flight.getFlightId()).pnrId(checkInResponse.getPnrId()).passengerId(String.valueOf(pnr.getPassenger().getId())).
+        passengerName(pnr.getPassenger().getFullName()).build();
         String json = Utils.objectToJson(dcsRequest);
         log.info("Message is processing for DCS : {}",json);
         kafkaPublisher.sendDCSMessage(dcsRequest.getPnrId(),json);
