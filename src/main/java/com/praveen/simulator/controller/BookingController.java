@@ -3,7 +3,6 @@ package com.praveen.simulator.controller;
 import com.praveen.simulator.dto.*;
 import com.praveen.simulator.entity.CheckInResponse;
 import com.praveen.simulator.service.BookingService;
-import com.praveen.simulator.model.AppRecord;
 import com.praveen.simulator.model.DcsRecord;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -38,11 +37,6 @@ public class BookingController {
 //    public AppRecord processAPP(@RequestBody AppRequest appRequest){
 //        return bookingService.processAPPData(appRequest.pnr(),appRequest.passportNumber(),appRequest.issuingCountry(),appRequest.gender());
 //    }
-
-    @PostMapping("/processDCS")
-    public DcsRecord processDCS(@RequestBody DcsCheckInRequest dcsCheckInRequest) {
-        return bookingService.processDCSData(dcsCheckInRequest.app(),dcsCheckInRequest.seatNumber(),dcsCheckInRequest.baggageWeight());
-    }
 
 
 //    @GetMapping("/getById/{id}")

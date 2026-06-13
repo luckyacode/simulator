@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 public class BookingService {
 
     private final AviationOrchestration aviationOrchestration;
-    private final FlightService flightService;
     private final PassengerService passengerService;
 
 
@@ -27,16 +26,6 @@ public class BookingService {
         log.info("Booking Service processing for Passenger Booking ....");
         Passenger passenger = passengerService.addPassenger(passengerRequest);
         return aviationOrchestration.createReservation(passenger,flightId,amount);
-    }
-
-    public AppRecord processAPPData(PnrRecord pnr, String passportNum, String countryCode, String gender) {
-        log.info("Booking Service processing for APP Data ....");
-        return aviationOrchestration.processImmigrationClearance(pnr,passportNum,countryCode,gender);
-    }
-
-    public DcsRecord processDCSData(AppRequest app,  String targetSeat, double bagWeight) {
-        log.info("Booking Service processing for DCS Data ....");
-        return aviationOrchestration.performAirportCheckIn(app,targetSeat,bagWeight);
     }
 
     public String checkInPassenger(CheckInRequest checkInRequest) {

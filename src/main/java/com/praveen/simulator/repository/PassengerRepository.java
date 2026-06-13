@@ -1,4 +1,4 @@
-package com.praveen.simulator.other;
+package com.praveen.simulator.repository;
 
 import com.praveen.simulator.entity.Passenger;
 import org.springframework.data.jpa.repository.JpaRepository;

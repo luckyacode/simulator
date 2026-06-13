@@ -43,19 +43,6 @@ public class AviationOrchestration {
         return pnrRequest;
     }
 
-    public AppRecord processImmigrationClearance(PnrRecord pnr, String passportNum, String countryCode, String gender) {
-        Passenger traveler = pnr.passengers();
-        String governmentResponse = "CLEARED";
-        if (passportNum.startsWith("X") || countryCode.equals("REJ")) {
-            governmentResponse = "MANUAL_CHECK";
-        }
-
-        return new AppRecord(pnr.pnrLocator(), passportNum, countryCode.toUpperCase(), LocalDate.now().plusYears(5), // Passport valid for 5 years
-                LocalDate.of(1992, 6, 15),    // Simulated Date of Birth
-                gender, countryCode.toUpperCase(),    // Nationality
-                governmentResponse);
-    }
-
     public void performAirportCheckIn(CheckInRequest checkInRequest){
         Passenger passenger = pnrService.getPNRById(checkInRequest.getPnrId()).getPassenger();
         passenger.setDocumentDetails(checkInRequest.getDocumentDetails());

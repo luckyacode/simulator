@@ -1,4 +1,4 @@
-package com.praveen.simulator.other;
+package com.praveen.simulator.helper;
 
 import com.praveen.simulator.dto.FlightRequest;
 import com.praveen.simulator.dto.PassengerRequest;

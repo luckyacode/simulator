@@ -5,6 +5,7 @@ import jakarta.persistence.Enumerated;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -25,4 +26,7 @@ public class FlightRequest {
     private LocalTime departureTime;
     private LocalDate arrivalDate;
     private LocalTime arrivalTime;
+    private LocalDateTime scheduledDepartureDateTime;
+    private LocalDateTime scheduledArrivalDateTime;
+
 }

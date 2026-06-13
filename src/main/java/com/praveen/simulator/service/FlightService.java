@@ -4,7 +4,7 @@ import com.praveen.simulator.dto.FlightRequest;
 import com.praveen.simulator.dto.Status;
 import com.praveen.simulator.entity.FlightManifest;
 import com.praveen.simulator.helper.AirlineException;
-import com.praveen.simulator.other.CommonMapper;
+import com.praveen.simulator.helper.CommonMapper;
 import com.praveen.simulator.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

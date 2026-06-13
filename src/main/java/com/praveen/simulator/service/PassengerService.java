@@ -1,10 +1,9 @@
 package com.praveen.simulator.service;
 
 import com.praveen.simulator.dto.PassengerRequest;
-import com.praveen.simulator.helper.Utils;
 import com.praveen.simulator.entity.Passenger;
-import com.praveen.simulator.other.CommonMapper;
-import com.praveen.simulator.other.PassengerRepository;
+import com.praveen.simulator.helper.CommonMapper;
+import com.praveen.simulator.repository.PassengerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

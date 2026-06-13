@@ -23,11 +23,15 @@ public class FlightDetail {
     private String arrivalCountry;
     private String equipment;
 
-    // BRAND NEW: Separated Date and Time Tracking
+    // Separated Date and Time Tracking
     private LocalDate departureDate;
     private LocalTime departureTime;
     private LocalDate arrivalDate;
     private LocalTime arrivalTime;
+
+    // 🌟 BRAND NEW: Consolidated Production DateTime Fields
+    private LocalDateTime scheduledDepartureDateTime;
+    private LocalDateTime scheduledArrivalDateTime;
 
     public FlightDetail(String[] csvRow) {
         this.airline = csvRow[0];
@@ -44,45 +48,54 @@ public class FlightDetail {
     private void generateFullSchedule() {
         // 1. Unique Flight identifier
         int randomNum = (int) (Math.random() * 900) + 100;
-//        this.flightId = this.airline + "-" + randomNum;
+        this.flightId = this.airline + "-" + randomNum;
 
         // 2. Schedule Departure (For example, assume flights are generated for "Today")
         int hour = (int) (Math.random() * 24);
         int[] minutes = {0, 15, 30, 45};
         int minute = minutes[(int) (Math.random() * minutes.length)];
 
-        // Combine into a full timestamp anchor
-        LocalDateTime departureTimestamp = LocalDateTime.of(LocalDate.now(), LocalTime.of(hour, minute));
+        // Combine into a full timestamp anchor and save to your new field!
+        this.scheduledDepartureDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(hour, minute));
 
-        // Split and assign to separate date and time properties
-        this.departureDate = departureTimestamp.toLocalDate();
-        this.departureTime = departureTimestamp.toLocalTime();
+        // Split and assign to separate date and time properties for backwards compatibility
+        this.departureDate = this.scheduledDepartureDateTime.toLocalDate();
+        this.departureTime = this.scheduledDepartureDateTime.toLocalTime();
 
         // 3. Dynamically append random flight duration (between 2 and 14 hours)
         int flightDurationHours = (int) (Math.random() * 12) + 2;
 
-        // Java automatically handles rolling over the hours and increments the date if it crosses midnight
-        LocalDateTime arrivalTimestamp = departureTimestamp.plusHours(flightDurationHours);
+        // Java automatically handles rolling over midnight and increments the day.
+        // Save it directly to your second new field!
+        this.scheduledArrivalDateTime = this.scheduledDepartureDateTime.plusHours(flightDurationHours);
 
         // Split and assign to separate arrival date and time properties
-        this.arrivalDate = arrivalTimestamp.toLocalDate();
-        this.arrivalTime = arrivalTimestamp.toLocalTime();
+        this.arrivalDate = this.scheduledArrivalDateTime.toLocalDate();
+        this.arrivalTime = this.scheduledArrivalDateTime.toLocalTime();
 
         // 4. Evaluate status attributes
         String[] statuses = {"ON TIME", "DELAYED", "BOARDING"};
         this.status = statuses[(int) (Math.random() * statuses.length)];
     }
 
+    // --- Add Getters for your new fields so your APIs can read them ---
+    public LocalDateTime getScheduledDepartureDateTime() {
+        return this.scheduledDepartureDateTime;
+    }
+
+    public LocalDateTime getScheduledArrivalDateTime() {
+        return this.scheduledArrivalDateTime;
+    }
+
     @Override
     public String toString() {
-        // Format layout patterns for structural console outputs
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
+        // Format layout patterns using the consolidated LocalDateTime properties directly
+        DateTimeFormatter fullDateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        return String.format("[%s] %s | %s (%s) DEP: %s @ %s -> %s (%s) ARR: %s @ %s | Type: %s",
+        return String.format("[%s] %s | %s (%s) DEP: %s -> %s (%s) ARR: %s | Type: %s",
                 status, flightId,
-                departureAirport, departureCountry, departureDate.format(dateFormat), departureTime.format(timeFormat),
-                arrivalAirport, arrivalCountry, arrivalDate.format(dateFormat), arrivalTime.format(timeFormat),
+                departureAirport, departureCountry, scheduledDepartureDateTime.format(fullDateTimeFormat),
+                arrivalAirport, arrivalCountry, scheduledArrivalDateTime.format(fullDateTimeFormat),
                 equipment);
     }
 }
