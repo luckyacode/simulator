@@ -4,7 +4,7 @@ import com.praveen.simulator.dto.AuthorityDirection;
 import com.praveen.simulator.dto.PassengerRequest;
 import com.praveen.simulator.entity.APP;
 import com.praveen.simulator.entity.GovernmentClearanceResponse;
-import com.praveen.simulator.model.FlightDetail;
+import com.praveen.simulator.dto.FlightDetail;
 import lombok.SneakyThrows;
 import tools.jackson.databind.ObjectMapper;
 

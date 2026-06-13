@@ -2,7 +2,6 @@ package com.praveen.simulator.dto;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

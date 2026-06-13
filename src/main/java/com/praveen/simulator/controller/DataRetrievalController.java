@@ -2,7 +2,7 @@ package com.praveen.simulator.controller;
 
 import com.praveen.simulator.dto.PassengerRequest;
 import com.praveen.simulator.helper.Utils;
-import com.praveen.simulator.model.FlightDetail;
+import com.praveen.simulator.dto.FlightDetail;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

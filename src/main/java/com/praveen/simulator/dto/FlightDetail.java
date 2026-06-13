@@ -1,4 +1,4 @@
-package com.praveen.simulator.model;
+package com.praveen.simulator.dto;
 
 import lombok.*;
 
@@ -76,15 +76,6 @@ public class FlightDetail {
         // 4. Evaluate status attributes
         String[] statuses = {"ON TIME", "DELAYED", "BOARDING"};
         this.status = statuses[(int) (Math.random() * statuses.length)];
-    }
-
-    // --- Add Getters for your new fields so your APIs can read them ---
-    public LocalDateTime getScheduledDepartureDateTime() {
-        return this.scheduledDepartureDateTime;
-    }
-
-    public LocalDateTime getScheduledArrivalDateTime() {
-        return this.scheduledArrivalDateTime;
     }
 
     @Override
