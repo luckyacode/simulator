@@ -19,7 +19,7 @@ data:
   db-host: "postgres-service"
   kafka-host: "kafka-service"
   DB_PORT: "5432"
-  KAFKA_PORT: "9092"
+  kafka-port: "9092"
 
   # Database Configurations
   postgres-user: "root"

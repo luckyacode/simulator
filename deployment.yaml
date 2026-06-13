@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: simulator-container
-          image: simulator:1.1     # Docker image registry/name and immutable version tag
+          image: simulator:1.4     # Docker image registry/name and immutable version tag
           # 1. BULK ENVIRONMENT VARIABLES (App Configurations)
           envFrom:
             - configMapRef:

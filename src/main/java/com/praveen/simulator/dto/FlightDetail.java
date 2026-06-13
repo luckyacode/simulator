@@ -1,5 +1,6 @@
 package com.praveen.simulator.dto;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -12,8 +13,13 @@ import java.time.format.DateTimeFormatter;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table
+@Entity
 public class FlightDetail {
     // Structural vectors from your CSV dataset
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String flightId;
     private String airline;
     private String status;
