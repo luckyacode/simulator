@@ -1,5 +1,6 @@
-package com.praveen.simulator.model;
+package com.praveen.simulator.dto;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -12,8 +13,13 @@ import java.time.format.DateTimeFormatter;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table
+@Entity
 public class FlightDetail {
     // Structural vectors from your CSV dataset
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String flightId;
     private String airline;
     private String status;
@@ -76,15 +82,6 @@ public class FlightDetail {
         // 4. Evaluate status attributes
         String[] statuses = {"ON TIME", "DELAYED", "BOARDING"};
         this.status = statuses[(int) (Math.random() * statuses.length)];
-    }
-
-    // --- Add Getters for your new fields so your APIs can read them ---
-    public LocalDateTime getScheduledDepartureDateTime() {
-        return this.scheduledDepartureDateTime;
-    }
-
-    public LocalDateTime getScheduledArrivalDateTime() {
-        return this.scheduledArrivalDateTime;
     }
 
     @Override

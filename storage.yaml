@@ -1,0 +1,239 @@
+# ==============================================================================
+# 1. CONFIGURATION & SENSITIVE DATA
+# ==============================================================================
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+type: Opaque
+stringData:
+  postgres-password: "pnr_db"
+  pgadmin-password: "admin"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  # Host Discovery Variables
+  db-host: "postgres-service"
+  kafka-host: "kafka-service"
+  DB_PORT: "5432"
+  kafka-port: "9092"
+
+  # Database Configurations
+  postgres-user: "root"
+  postgres-db: "pnr_db"
+  pgadmin-email: "admin@admin.com"
+
+  # Kafka configurations mapped from compose environment
+  kafka-node-id: "1"
+  kafka-process-roles: "broker,controller"
+  kafka-listeners: "PLAINTEXT://:9092,CONTROLLER://:9093"
+  # Uses the variable definition directly
+  kafka-advertised-listeners: "PLAINTEXT://kafka-service:9092"
+  kafka-controller-quorum-voters: "1@localhost:9093"
+  kafka-controller-listener-names: "CONTROLLER"
+  kafka-inter-broker-listener-name: "PLAINTEXT"
+  kafka-cluster-id: "praveen_kafka_cluster_2026"
+  kafka-offsets-topic-replication-factor: "1"
+  kafka-transaction-state-log-replication-factor: "1"
+  kafka-transaction-state-log-min-isr: "1"
+
+---
+# ==============================================================================
+# 2. POSTGRES DATABASE
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-db
+  labels:
+    app: postgres-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-db
+  template:
+    metadata:
+      labels:
+        app: postgres-db
+    spec:
+      containers:
+        - name: postgres-service
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: postgres-user
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: postgres-db
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: postgres-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: postgres-db
+
+---
+# ==============================================================================
+# 3. PGADMIN
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+  labels:
+    app: pgadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      labels:
+        app: pgadmin
+    spec:
+      containers:
+        - name: pgadmin-service
+          image: dpage/pgadmin4:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: pgadmin-email
+            - name: PGADMIN_DEFAULT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: pgadmin-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30083
+  selector:
+    app: pgadmin
+
+---
+# ==============================================================================
+# 4. APACHE KAFKA (KRaft Mode)
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+  labels:
+    app: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - name: kafka-service
+          image: apache/kafka:latest
+          ports:
+            - containerPort: 9092
+          env:
+            - name: KAFKA_NODE_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-node-id
+            - name: KAFKA_PROCESS_ROLES
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-process-roles
+            - name: KAFKA_LISTENERS
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-listeners
+            - name: KAFKA_ADVERTISED_LISTENERS
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-advertised-listeners
+            - name: KAFKA_CONTROLLER_QUORUM_VOTERS
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-controller-quorum-voters
+            - name: KAFKA_CONTROLLER_LISTENER_NAMES
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-controller-listener-names
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-inter-broker-listener-name
+            - name: KAFKA_CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-cluster-id
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-offsets-topic-replication-factor
+            - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-transaction-state-log-replication-factor
+            - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: kafka-transaction-state-log-min-isr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9092
+      targetPort: 9092
+  selector:
+    app: kafka

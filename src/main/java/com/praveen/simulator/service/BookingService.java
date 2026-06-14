@@ -1,6 +1,5 @@
 package com.praveen.simulator.service;
 
-import com.praveen.simulator.dto.AppRequest;
 import com.praveen.simulator.dto.CheckInRequest;
 import com.praveen.simulator.dto.PNRRequest;
 import com.praveen.simulator.dto.PassengerRequest;
@@ -8,7 +7,6 @@ import com.praveen.simulator.entity.CheckInResponse;
 import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.helper.AviationOrchestration;
 import com.praveen.simulator.helper.Utils;
-import com.praveen.simulator.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

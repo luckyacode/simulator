@@ -3,12 +3,8 @@ package com.praveen.simulator.helper;
 
 import com.praveen.simulator.dto.*;
 import com.praveen.simulator.entity.CheckInResponse;
-import com.praveen.simulator.entity.FlightManifest;
 import com.praveen.simulator.entity.Passenger;
-import com.praveen.simulator.kafka.KafkaPublisher;
 import com.praveen.simulator.kafka.KafkaService;
-import com.praveen.simulator.model.*;
-import com.praveen.simulator.model.FlightDetail;
 import com.praveen.simulator.service.CheckInResponseService;
 import com.praveen.simulator.service.PNRService;
 import com.praveen.simulator.service.PassengerService;
@@ -17,11 +13,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -51,10 +43,6 @@ public class AviationOrchestration {
         kafkaService.checkInOnAirport(checkInRequest);
     }
 
-    public DcsRecord performAirportCheckIn(AppRequest app, String targetSeat, double bagWeight) {
-        return null;
-    }
-
     @SneakyThrows
     public CheckInResponse performAirportCheckInResponseByClearance(String clearanceId) {
       return checkInResponseService.getCheckInResponseByClearanceId(clearanceId)
@@ -66,25 +54,5 @@ public class AviationOrchestration {
       return checkInResponseService.getCheckInResponseByPassengerId(passengerId)
               .orElseThrow(()->AirlineException.badRequest("CheckIn is still in progress...."));
     }
-
-//    public DcsRecord performAirportCheckIn(AppRequest app, String targetSeat, double bagWeight) {
-//        FlightManifest flight = app.pnr().itinerary();
-//        // Fail check-in instantly if border control flagged immigration profile
-////        if (app.clearanceStatus().equals("REJECTED")) {
-////            throw new IllegalStateException("Security Denied: DCS check-in blocked by border control protocol.");
-////        }
-//
-//        String generatedTicket = "016" + (long) (Math.random() * 10000000000L); // Standard 13-digit ticket string
-//        String seqNumber = String.format("%03d", (int) (Math.random() * 150) + 1);
-//
-//        List<BaggageInfo> bags = new ArrayList<>();
-//        if (bagWeight > 0) {
-//            String bagBarcode = flight.getFlightId() + (int) (Math.random() * 900000 + 100000);
-//            bags.add(new BaggageInfo(bagBarcode, bagWeight, flight.getArrivalAirport()));
-//        }
-//
-//        return new DcsRecord(generatedTicket, app.pnr().pnrLocator(), flight, targetSeat, seqNumber, "CHECKED_IN", bags, LocalDateTime.now(), app.pnr().totalAmountPaid() > 500 // Automatically trigger upgrade eligibility for premium segments
-//        );
-//    }
 
 }

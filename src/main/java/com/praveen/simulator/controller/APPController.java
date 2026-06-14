@@ -31,7 +31,7 @@ public class APPController {
 
     @GetMapping("/getAPPMessageById/{id}")
     public String getAPPMessageById(@PathVariable String id) throws Exception {
-        return Utils.convertToAppEdifact(appRepository.findByAppId(id).orElseThrow(()-> new RuntimeException("app not found")));
+        return Utils.convertToAppEdifact(appRepository.findByAppId(id).orElseThrow(()-> AirlineException.badRequest("app not found")));
     }
 
     @GetMapping("/getAll")

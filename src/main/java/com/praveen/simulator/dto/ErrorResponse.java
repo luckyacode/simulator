@@ -1,4 +1,4 @@
-package com.praveen.simulator.helper;
+package com.praveen.simulator.dto;
 
 import lombok.Builder;
 import lombok.Data;
