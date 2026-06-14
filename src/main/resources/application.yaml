@@ -45,6 +45,14 @@ spring:
       ack-mode: RECORD
     #----Exactly One Delivery Semantics
 management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      export:
+        enabled: false
   endpoints:
     web:
       exposure:
@@ -58,3 +66,6 @@ management:
       application: api-pnr-gateway
 server:
   port: ${SERVER_PORT:8080}
+logging:
+  pattern:
+    correlation: "[%X{traceId:-},%X{spanId:-}]"
