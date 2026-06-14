@@ -41,8 +41,11 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
     # === LISTENER CONFIGURATION ===
+    template:
+      observation-enabled: true
     listener:
       ack-mode: RECORD
+      observation-enabled: true
     #----Exactly One Delivery Semantics
 management:
   tracing:
