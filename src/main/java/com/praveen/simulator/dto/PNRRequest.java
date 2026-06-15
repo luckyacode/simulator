@@ -14,12 +14,12 @@ public class PNRRequest {
     private LocalDateTime bookingDateTime;
     private String bookingStatus;
     private String flightId;
-    private int passengerId;
+    private Integer passengerId;
     private TicketStatus ticketStatus;
     private Channel bookingChannel;
     private BookingClass bookingClass;
     private String agencyId;
     private String transactionId;
-    private double totalAmount;
+    private Double totalAmount;
     private String currency;
 }

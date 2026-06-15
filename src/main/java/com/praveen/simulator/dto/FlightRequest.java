@@ -2,6 +2,7 @@ package com.praveen.simulator.dto;
 
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,7 +25,7 @@ public class FlightRequest {
     private LocalTime departureTime;
     private LocalDate arrivalDate;
     private LocalTime arrivalTime;
-    private LocalDateTime scheduledDepartureDateTime;
-    private LocalDateTime scheduledArrivalDateTime;
+    private Instant scheduledDepartureDateTime;
+    private Instant scheduledArrivalDateTime;
 
 }
