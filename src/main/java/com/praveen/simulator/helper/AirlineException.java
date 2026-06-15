@@ -38,4 +38,8 @@ public class AirlineException extends RuntimeException {
     public static AirlineException conflict(String message,Exception e){
         return new AirlineException(message,HttpStatus.CONFLICT,e);
     }
+
+    public static AirlineException conflict(String message){
+        return new AirlineException(message,HttpStatus.CONFLICT);
+    }
 }

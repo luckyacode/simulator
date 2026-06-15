@@ -2,6 +2,7 @@ package com.praveen.simulator.service;
 
 import com.praveen.simulator.dto.PassengerRequest;
 import com.praveen.simulator.entity.Passenger;
+import com.praveen.simulator.helper.AirlineException;
 import com.praveen.simulator.helper.CommonMapper;
 import com.praveen.simulator.repository.PassengerRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,11 @@ public class PassengerService {
     private final PassengerRepository passengerRepository;
     private final CommonMapper commonMapper;
 
+
     public Passenger addPassenger(PassengerRequest passengerRequest) {
+        if(getPassengerById(passengerRequest.getId()).isPresent()){
+            throw AirlineException.conflict("Cannot Create Booking, Passenger reference "+passengerRequest.getId()+" already exists.");
+        }
         log.info("Adding passenger : {}",passengerRequest);
         Passenger savedPassenger = passengerRepository.save(commonMapper.toPassenger(passengerRequest));
         log.info("Passenger saved to db with id : {}",savedPassenger.getId());
