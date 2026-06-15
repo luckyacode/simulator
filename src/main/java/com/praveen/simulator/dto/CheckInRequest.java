@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CheckInRequest {
     private String pnrId;
-    private String clearanceId;
     private DocumentDetails documentDetails;
 }

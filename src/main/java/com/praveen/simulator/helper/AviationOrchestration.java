@@ -5,6 +5,7 @@ import com.praveen.simulator.dto.*;
 import com.praveen.simulator.entity.CheckInResponse;
 import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.kafka.KafkaService;
+import com.praveen.simulator.kafka.events.CheckInEvent;
 import com.praveen.simulator.service.CheckInResponseService;
 import com.praveen.simulator.service.PNRService;
 import com.praveen.simulator.service.PassengerService;
@@ -35,12 +36,12 @@ public class AviationOrchestration {
         return pnrRequest;
     }
 
-    public void performAirportCheckIn(CheckInRequest checkInRequest){
-        Passenger passenger = pnrService.getPNRById(checkInRequest.getPnrId()).getPassenger();
-        passenger.setDocumentDetails(checkInRequest.getDocumentDetails());
+    public void performAirportCheckIn(CheckInEvent checkInEvent){
+        Passenger passenger = pnrService.getPNRById(checkInEvent.pnrId()).getPassenger();
+        passenger.setDocumentDetails(checkInEvent.documentDetails());
         passengerService.update(passenger);
         log.info("Document updated for passenger : {}",passenger);
-        kafkaService.checkInOnAirport(checkInRequest);
+        kafkaService.checkInOnAirport(checkInEvent);
     }
 
     @SneakyThrows

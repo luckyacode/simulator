@@ -1,6 +1,6 @@
 package com.praveen.simulator.kafka;
 
-import com.praveen.simulator.dto.CheckInRequest;
+import com.praveen.simulator.kafka.events.CheckInEvent;
 import com.praveen.simulator.dto.PNRRequest;
 import com.praveen.simulator.helper.Utils;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,9 @@ public class KafkaService {
         kafkaPublisher.publishPNRRequest(pnrRequest.getPNRId(),json);
     }
 
-    public void checkInOnAirport(CheckInRequest checkInRequest) {
-        log.info("Checking process called...{}",checkInRequest);
-        String json = Utils.objectToJson(checkInRequest);
-        kafkaPublisher.sendCheckInRequestMessage(checkInRequest.getClearanceId(),json);
+    public void checkInOnAirport(CheckInEvent checkInEvent) {
+        log.info("Checking process called...{}",checkInEvent);
+        String json = Utils.objectToJson(checkInEvent);
+        kafkaPublisher.sendCheckInRequestMessage(checkInEvent.clearanceId(),json);
     }
 }
