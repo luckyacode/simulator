@@ -38,6 +38,11 @@ public class ApiResponse<T> {
                 .body(new ApiResponse<>(Constants.FAILURE, message, Instant.now(), null));
     }
 
+    public static <T> ResponseEntity<ApiResponse<T>> notFound(String message) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse<>(Constants.FAILURE, message, Instant.now(), null));
+    }
+
     // Overloaded badRequest if you *do* want to pass validation error details in 'data'
     public static <T> ResponseEntity<ApiResponse<T>> badRequest(T data, String message) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

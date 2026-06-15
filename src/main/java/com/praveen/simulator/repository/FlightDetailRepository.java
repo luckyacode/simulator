@@ -1,4 +1,4 @@
-package com.praveen.simulator.controller;
+package com.praveen.simulator.repository;
 
 import com.praveen.simulator.dto.FlightDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
