@@ -44,8 +44,8 @@ public class FlightService {
         return flightRepository.findByFlightId(flightId).orElseThrow(()-> AirlineException.badRequest("Flight not found with id : "+flightId));
     }
 
-    public List<FlightManifest> getActiveFlights() {
-        log.info("Fetching Active flights.... ");
-        return flightRepository.findAllByStatus(Status.ACTIVE);
+    public List<FlightManifest> getFlightsByStatus(Status status) {
+        log.info("Fetching flights by status .... {}",status);
+        return flightRepository.findAllByStatus(status);
     }
 }

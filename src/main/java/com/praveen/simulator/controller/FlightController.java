@@ -1,36 +1,52 @@
 package com.praveen.simulator.controller;
 
+import com.praveen.simulator.dto.ApiResponse;
 import com.praveen.simulator.dto.FlightRequest;
+import com.praveen.simulator.dto.Status;
 import com.praveen.simulator.entity.FlightManifest;
 import com.praveen.simulator.service.FlightService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/flight")
-@RequiredArgsConstructor
+@RequestMapping("/api/v1/flights") // Production Standard: Versioning and Base Path
 public class FlightController {
+
     private final FlightService flightService;
 
-    @PostMapping("/scheduleFlight")
-    public FlightManifest scheduleFlight(@RequestBody FlightRequest flightRequest){
-        return flightService.scheduleFlight(flightRequest);
+    // Production Standard: Constructor Injection instead of @Autowired
+    public FlightController(FlightService flightService) {
+        this.flightService = flightService;
     }
 
-    @PostMapping("/getAllFlights")
-    public List<FlightManifest> getAllFlights(){
-        return flightService.getAllFlights();
+    /**
+     * Creation/Action: Creates a new flight schedule.
+     * Uses POST and returns HTTP 201 (Created).
+     */
+    @PostMapping
+    public ResponseEntity<ApiResponse<FlightManifest>> scheduleFlight(@RequestBody FlightRequest flightRequest) {
+        // Production Note: For creation, use your .created() method (returns HTTP 201)
+        return ApiResponse.created(flightService.scheduleFlight(flightRequest), "Flight Scheduling Triggered");
     }
 
-    @PostMapping("/getFlightById{flightId}")
-    public FlightManifest getFlightById(@PathVariable String flightId){
-        return flightService.getFlightByFlightId(flightId);
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<FlightManifest>>> getFlights() {
+        return ApiResponse.ok(flightService.getAllFlights(), "All flights loaded successfully");
     }
 
-    @PostMapping("/getActiveFlights")
-    public List<FlightManifest> getActiveFlights(){
-        return flightService.getActiveFlights();
+    @GetMapping("/flightStatus")
+    public ResponseEntity<ApiResponse<List<FlightManifest>>> getFlightsByStatus(
+            @RequestParam Status status) {
+        return ApiResponse.ok(flightService.getFlightsByStatus(status), "Flight with status "+status+" loaded successfully");
+    }
+
+    /**
+     * Read Single: Fetches a flight by its unique ID.
+     * URL looks like: GET /api/v1/flights/FL-102
+     */
+    @GetMapping("/{flightId}")
+    public ResponseEntity<ApiResponse<FlightManifest>> getFlightById(@PathVariable String flightId) {
+        return ApiResponse.ok(flightService.getFlightByFlightId(flightId), "Flight Found");
     }
 }

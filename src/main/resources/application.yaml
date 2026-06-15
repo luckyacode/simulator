@@ -20,6 +20,7 @@ spring:
       maximum-pool-size=4:
   ###----Exactly One Delivery Semantics
   kafka:
+#    bootstrap-servers: ${kafka-host:localhost}:${kafka-port:9092}
     bootstrap-servers: ${kafka-host:localhost}:${kafka-port:9092}
 
     # === CONSUMER CONFIGURATION ===
@@ -54,7 +55,7 @@ management:
     enabled: true
     sampling:
       probability: 1.0
-  zipkin:
+  Zipkin:
     tracing:
       export:
         enabled: false

@@ -1,17 +1,15 @@
 package com.praveen.simulator.helper;
 
-import com.praveen.simulator.dto.ErrorResponse;
+import com.praveen.simulator.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class ExceptionHandlers {
 
     @ExceptionHandler({AirlineException.class})
-    public ResponseEntity<ErrorResponse> handleException(AirlineException airlineException){
-        return new ResponseEntity<>(ErrorResponse.builder().message(airlineException.getMessage()).timestamp(LocalDateTime.now().toString()).build(),airlineException.getHttpStatus());
+    public ResponseEntity<ApiResponse<Throwable>> handleException(AirlineException airlineException){
+        return ApiResponse.error(airlineException.getMessage());
     }
 }
