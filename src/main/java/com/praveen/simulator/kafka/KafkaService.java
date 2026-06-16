@@ -11,6 +11,7 @@ import com.praveen.simulator.service.PnrService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -41,7 +42,7 @@ public class KafkaService {
         }
         log.info("Dispatching CheckInEvent to topic: {} matching PNR: {} and Tracking Ref: {}", KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), checkInEvent.clearanceId());
         String json = Utils.objectToJson(checkInEvent);
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.CheckIn.REQUESTS, checkInEvent.clearanceId(), json);
+        kafkaPublisher.sendKafkaEvent(KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), json);
     }
 
     public void processDcsMessage(DCSRequestEvent dcsRequestEvent) {
@@ -54,10 +55,10 @@ public class KafkaService {
         kafkaPublisher.sendKafkaEvent(KafkaTopics.DCS_EVENTS, dcsRequestEvent.getPnrId(), json);
     }
 
+    @Transactional
     public void processCheckInResponse(CheckInResponseEvent checkInResponseEvent) {
         PNR pnr = pnrService.getPnrById(checkInResponseEvent.getPnrId());
         CheckInResponse checkInResponse = commonMapper.toCheckInResponse(checkInResponseEvent);
-        log.info("Processing checkInResponse further : {}", checkInResponse);
         checkInResponseService.add(checkInResponse);
         log.info("CheckInResponse processing for save in db record : {}",checkInResponse.getPnrId());
         governmentClearanceService.handleVettingResult(checkInResponse);

@@ -19,7 +19,7 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = KafkaTopics.CheckIn.RESPONSES, groupId = "group-id2")
     public void consumingCheckInRequest(@Payload String response, @Header(value = KafkaHeaders.RECEIVED_KEY) String pnrId) {
-        log.info("CheckInResponse Message received with key {} and message : {}", pnrId, response);
+        log.info("✓ Received CheckInResponse event via Kafka Broker partition. PNR Key: {}, Action: {}", pnrId, response);
         CheckInResponseEvent checkInResponseEvent = Utils.jsonToObject(response, CheckInResponseEvent.class);
         kafkaService.processCheckInResponse(checkInResponseEvent);
     }
