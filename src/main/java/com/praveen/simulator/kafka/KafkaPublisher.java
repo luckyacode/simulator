@@ -37,7 +37,7 @@ public class KafkaPublisher {
             throw new IllegalArgumentException("Kafka partition routing key (pnrId) cannot be null or empty for stateful changes.");
         }
 
-        log.debug("Routing stateful event to topic [{}] pinned to partition key [PNR: {}]", topic, pnrId);
+        log.info("Routing stateful event to topic [{}] pinned to partition key [PNR: {}]", topic, pnrId);
         String json = Utils.objectToJson(eventPayload);
         kafkaTemplate.send(topic, pnrId, json)
                 .whenComplete((result, ex) -> {
