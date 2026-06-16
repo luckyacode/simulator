@@ -36,7 +36,7 @@ public class AviationOrchestration {
         String randomPnr = Utils.generatePnrLocator();
 
         PnrRequest pnrRequest = PnrRequest.builder()
-                .PNRId(randomPnr)
+                .pnrId(randomPnr)
                 .bookingDateTime(LocalDateTime.now())
                 .bookingStatus("CONFIRMED")
                 .flightId(flightId)
@@ -69,6 +69,8 @@ public class AviationOrchestration {
         // Securely fetch the PNR profile or fail gracefully if it doesn't exist
         PNR pnr = pnrService.getOptionalPnrById(checkInEvent.pnrId())
                 .orElseThrow(() -> AirlineException.badRequest("Check-in failed: PNR locator not found."));
+
+
 
         Passenger passenger = pnr.getPassenger();
         if (passenger == null) {

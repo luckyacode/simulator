@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @ToString
 @Data
 public class PnrRequest {
-    private String PNRId;
+    private String pnrId;
     private LocalDateTime bookingDateTime;
     private String bookingStatus;
     private String flightId;

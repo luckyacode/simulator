@@ -18,14 +18,14 @@ public class KafkaService {
         log.info("Converting PnrRequest to json : {}",pnrRequest);
         String json = Utils.objectToJson(pnrRequest);
         log.info("Json value : {}",json);
-        kafkaPublisher.publishPnrRequest(pnrRequest.getPNRId(),json);
+        kafkaPublisher.publishPnrRequest(pnrRequest.getPnrId(),json);
     }
 
     public void sendPNRMessage(PnrEvent pnrEvent){
         log.info("Converting PnrEvent to json : {}",pnrEvent);
         String json = Utils.objectToJson(pnrEvent);
         log.info("Json value : {}",json);
-        kafkaPublisher.publishPnrRequest(pnrEvent.PnrId(),json);
+        kafkaPublisher.publishPnrRequest(pnrEvent.pnrId(),json);
     }
 
     public void checkInOnAirport(CheckInEvent checkInEvent) {
