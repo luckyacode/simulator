@@ -6,6 +6,7 @@ import com.praveen.simulator.entity.FlightManifest;
 import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.kafka.events.CheckInEvent;
 import com.praveen.simulator.kafka.events.CheckInResponseEvent;
+import com.praveen.simulator.kafka.events.DCSRequestEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -19,4 +20,6 @@ public interface CommonMapper {
     CheckInEvent toCheckInEvent(CheckInRequest checkInRequest, String clearanceId);
 
     CheckInResponse toCheckInResponse(CheckInResponseEvent checkInResponseEvent);
+
+    DCSRequestEvent toDcsRequestEvent(DCSRequest dcsRequest);
 }
