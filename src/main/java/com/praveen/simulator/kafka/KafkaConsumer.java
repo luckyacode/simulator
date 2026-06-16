@@ -6,7 +6,7 @@ import com.praveen.simulator.entity.*;
 import com.praveen.simulator.helper.Utils;
 import com.praveen.simulator.repository.APPRepository;
 import com.praveen.simulator.service.CheckInResponseService;
-import com.praveen.simulator.service.PNRService;
+import com.praveen.simulator.service.PnrService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class KafkaConsumer {
     private final CheckInResponseService checkInResponseService;
-    private final PNRService pnrService;
+    private final PnrService pnrService;
     private final APPRepository appRepository;
     private final KafkaPublisher kafkaPublisher;
 
@@ -34,7 +34,7 @@ public class KafkaConsumer {
         log.info("Successfully Message Received : {}", checkInResponse);
         checkInResponseService.add(checkInResponse);
         pnrService.handleVettingResult(checkInResponse);
-        PNR pnr = pnrService.getPNRById(checkInResponse.getPnrId());
+        PNR pnr = pnrService.getPnrById(checkInResponse.getPnrId());
         FlightManifest flight = pnr.getFlight();
 
         if (appRepository.findByGovernmentClearanceResponse_PassengerId(String.valueOf(pnr.getPassenger().getId())).isEmpty()) {

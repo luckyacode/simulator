@@ -2,7 +2,7 @@ package com.praveen.simulator.service;
 
 import com.praveen.simulator.kafka.events.CheckInEvent;
 import com.praveen.simulator.dto.CheckInRequest;
-import com.praveen.simulator.dto.PNRRequest;
+import com.praveen.simulator.dto.PnrRequest;
 import com.praveen.simulator.dto.PassengerRequest;
 import com.praveen.simulator.entity.CheckInResponse;
 import com.praveen.simulator.entity.Passenger;
@@ -26,7 +26,7 @@ public class BookingService {
      * Fixed: Wrapped in a write transactional boundary to prevent orphaned passenger entities on failure.
      */
     @Transactional
-    public PNRRequest createPassengerBooking(PassengerRequest passengerRequest, String flightId, double amount) {
+    public PnrRequest createPassengerBooking(PassengerRequest passengerRequest, String flightId, double amount) {
         log.info("Processing passenger booking request for Flight ID: {}", flightId);
 
         // Step 1: Record passenger details

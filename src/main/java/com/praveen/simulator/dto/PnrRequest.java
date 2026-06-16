@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 @Data
-public class PNRRequest {
+public class PnrRequest {
     private String PNRId;
     private LocalDateTime bookingDateTime;
     private String bookingStatus;

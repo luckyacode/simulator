@@ -3,7 +3,7 @@ package com.praveen.simulator.controller;
 import com.praveen.simulator.dto.ApiResponse;
 import com.praveen.simulator.dto.BookingRequest;
 import com.praveen.simulator.dto.CheckInRequest;
-import com.praveen.simulator.dto.PNRRequest;
+import com.praveen.simulator.dto.PnrRequest;
 import com.praveen.simulator.entity.CheckInResponse;
 import com.praveen.simulator.service.BookingService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ public class BookingController {
      * Fixed: Returns HTTP 201 Created instead of 200 OK.
      */
     @PostMapping
-    public ResponseEntity<ApiResponse<PNRRequest>> createPassengerBooking(@RequestBody BookingRequest bookingRequest) {
-        PNRRequest result = bookingService.createPassengerBooking(
+    public ResponseEntity<ApiResponse<PnrRequest>> createPassengerBooking(@RequestBody BookingRequest bookingRequest) {
+        PnrRequest result = bookingService.createPassengerBooking(
                 bookingRequest.passenger(),
                 bookingRequest.flightId(),
                 bookingRequest.amount()

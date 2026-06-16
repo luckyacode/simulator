@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 public class KafkaPublisher {
     private final KafkaTemplate<String,String> kafkaTemplate;
 
-    public void publishPNRRequest(String id,String pnrRequest){
+    public void publishPnrRequest(String id,String pnrRequest){
         CompletableFuture<SendResult<String, String>> result = kafkaTemplate.send("pnr-topic",id,pnrRequest);
         result.whenComplete((((object, exception) -> {
             if(exception==null)

@@ -34,7 +34,7 @@ public class PassengerService {
    public Passenger update(Passenger passenger) {
         log.info("Updating passenger : {}",passenger);
         Passenger savedPassenger = passengerRepository.save(passenger);
-        log.info("Passenger saved to db  : {}",savedPassenger);
+        log.info("Passenger updated to db  : {}",savedPassenger);
         return savedPassenger;
     }
 
