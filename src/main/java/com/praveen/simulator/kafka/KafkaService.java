@@ -1,6 +1,6 @@
 package com.praveen.simulator.kafka;
 
-import com.praveen.simulator.dto.PnrEvent;
+import com.praveen.simulator.kafka.events.PnrEvent;
 import com.praveen.simulator.entity.*;
 import com.praveen.simulator.helper.CommonMapper;
 import com.praveen.simulator.helper.Utils;

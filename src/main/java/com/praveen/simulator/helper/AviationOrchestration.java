@@ -7,6 +7,7 @@ import com.praveen.simulator.entity.PNR;
 import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.kafka.KafkaService;
 import com.praveen.simulator.kafka.events.CheckInEvent;
+import com.praveen.simulator.kafka.events.PnrEvent;
 import com.praveen.simulator.service.CheckInResponseService;
 import com.praveen.simulator.service.PassengerService;
 import com.praveen.simulator.service.PnrService;

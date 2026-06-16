@@ -1,5 +1,8 @@
-package com.praveen.simulator.dto;
+package com.praveen.simulator.kafka.events;
 
+import com.praveen.simulator.dto.BookingClass;
+import com.praveen.simulator.dto.Channel;
+import com.praveen.simulator.dto.TicketStatus;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
