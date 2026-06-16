@@ -19,42 +19,17 @@ import java.util.concurrent.CompletableFuture;
 public class KafkaService {
     private final KafkaPublisher kafkaPublisher;
 
-    public void processPnrEvent(PnrEvent pnrEvent){
-        log.info("Converting PnrEvent to json : {}",pnrEvent);
-        String json = Utils.objectToJson(pnrEvent);
-        log.info("Json value : {}",json);
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.PNR_EVENTS, pnrEvent.pnrId(),pnrEvent);
-//        kafkaPublisher.publishKafkaMessage(KafkaTopics.PNR_EVENTS,pnrEvent.pnrId(),json);
-    }
-
-    public void processCheckInEvent(CheckInEvent checkInEvent) {
-        log.info("Checking process called...{}",checkInEvent);
-        String json = Utils.objectToJson(checkInEvent);
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.CheckIn.REQUESTS, checkInEvent.clearanceId(),checkInEvent);
-//        kafkaPublisher.publishKafkaMessage(KafkaTopics.CheckIn.REQUESTS, checkInEvent.clearanceId(),json);
-    }
-
-    public void processDcsMessage(DCSRequest dcsRequest) {
-        log.info("Process Message for DCS : {}",dcsRequest.getPnrId());
-        log.info("Converting DCSRequest to json");
-        String json = Utils.objectToJson(dcsRequest);
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.DCS_EVENTS, dcsRequest.getPnrId(), dcsRequest);
-//        kafkaPublisher.publishKafkaMessage(KafkaTopics.DCS_EVENTS, dcsRequest.getPnrId(), json);
-    }
-
     public void processPnrEvent(PnrEvent pnrEvent) {
         if (pnrEvent == null || pnrEvent.pnrId() == null) {
             log.error("Aborting Kafka publish: PnrEvent or PNR ID tracking payload is null.");
             return;
         }
-
+        log.info("Dispatching PnrEvent message to topic: {} for PNR: {}", KafkaTopics.PNR_EVENTS, pnrEvent.pnrId());
         String json = Utils.objectToJson(pnrEvent);
         log.info("Json value : {}",json);
         kafkaPublisher.sendKafkaEvent(KafkaTopics.PNR_EVENTS, pnrEvent.pnrId(),pnrEvent);
 
-        log.info("Dispatching PnrEvent message to topic: {} for PNR: {}", KafkaTopics.PNR_EVENTS, pnrEvent.pnrId());
-
-        kafkaPublisher.publishKafkaMessage(KafkaTopics.PNR_EVENTS, pnrEvent.pnrId(), pnrEvent);
+//        kafkaPublisher.publishKafkaMessage(KafkaTopics.PNR_EVENTS, pnrEvent.pnrId(), pnrEvent);
     }
 
     public void processCheckInEvent(CheckInEvent checkInEvent) {
@@ -63,13 +38,13 @@ public class KafkaService {
             return;
         }
 
-        String json = Utils.objectToJson(checkInEvent);
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.CheckIn.REQUESTS, checkInEvent.clearanceId(),checkInEvent);
 
         log.info("Dispatching CheckInEvent to topic: {} matching PNR: {} and Tracking Ref: {}",
                 KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), checkInEvent.clearanceId());
+        String json = Utils.objectToJson(checkInEvent);
+        kafkaPublisher.sendKafkaEvent(KafkaTopics.CheckIn.REQUESTS, checkInEvent.clearanceId(),checkInEvent);
 
-        kafkaPublisher.publishKafkaMessage(KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), checkInEvent);
+//        kafkaPublisher.publishKafkaMessage(KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), checkInEvent);
     }
 
     public void processDcsMessage(DCSRequest dcsRequest) {
@@ -77,10 +52,12 @@ public class KafkaService {
             log.error("Aborting Kafka publish: DCSRequest metadata or payload body is null.");
             return;
         }
+
+        log.info("Dispatching DCS Event message to topic: {} for PNR ID: {}", KafkaTopics.DCS_EVENTS, dcsRequest.getPnrId());
+
         String json = Utils.objectToJson(dcsRequest);
         kafkaPublisher.sendKafkaEvent(KafkaTopics.DCS_EVENTS, dcsRequest.getPnrId(), dcsRequest);
 
-        log.info("Dispatching DCS Event message to topic: {} for PNR ID: {}", KafkaTopics.DCS_EVENTS, dcsRequest.getPnrId());
-        kafkaPublisher.publishKafkaMessage(KafkaTopics.DCS_EVENTS, dcsRequest.getPnrId(), dcsRequest);
+//        kafkaPublisher.publishKafkaMessage(KafkaTopics.DCS_EVENTS, dcsRequest.getPnrId(), dcsRequest);
     }
 }
