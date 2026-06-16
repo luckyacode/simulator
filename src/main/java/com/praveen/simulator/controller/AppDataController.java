@@ -3,7 +3,7 @@ package com.praveen.simulator.controller;
 import com.praveen.simulator.dto.ApiResponse;
 import com.praveen.simulator.entity.APP;
 import com.praveen.simulator.helper.Utils;
-import com.praveen.simulator.service.APPService;
+import com.praveen.simulator.service.AppService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AppDataController { // Renamed to match domain reality
 
-    private final APPService appDataService;
+    private final AppService appDataService;
 
     /**
      * Fetch all APP data records.
@@ -32,8 +32,8 @@ public class AppDataController { // Renamed to match domain reality
      * Path: GET /api/v1/app-data/{id}
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<APP>> getById(@PathVariable int id) {
-        return appDataService.getAppDataById(id)
+    public ResponseEntity<ApiResponse<APP>> getById(@PathVariable String id) {
+        return appDataService.getAppDataByAppId(id)
                 .map(app -> ApiResponse.ok(app, "APP Data Found"))
                 .orElseGet(() -> ApiResponse.notFound("APP Data with id " + id + " not found"));
     }
