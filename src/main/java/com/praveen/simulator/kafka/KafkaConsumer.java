@@ -1,16 +1,8 @@
 package com.praveen.simulator.kafka;
 
-import com.praveen.simulator.dto.DCSRequest;
-import com.praveen.simulator.dto.DocumentDetails;
-import com.praveen.simulator.entity.*;
-import com.praveen.simulator.helper.CommonMapper;
 import com.praveen.simulator.helper.Utils;
 import com.praveen.simulator.kafka.events.CheckInResponseEvent;
 import com.praveen.simulator.kafka.events.KafkaTopics;
-import com.praveen.simulator.repository.AppRepository;
-import com.praveen.simulator.service.CheckInResponseService;
-import com.praveen.simulator.service.GovernmentClearanceService;
-import com.praveen.simulator.service.PnrService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,9 +10,6 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @Slf4j

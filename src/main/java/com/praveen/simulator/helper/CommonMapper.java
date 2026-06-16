@@ -20,6 +20,4 @@ public interface CommonMapper {
     CheckInEvent toCheckInEvent(CheckInRequest checkInRequest, String clearanceId);
 
     CheckInResponse toCheckInResponse(CheckInResponseEvent checkInResponseEvent);
-
-    DCSRequestEvent toDcsRequestEvent(DCSRequest dcsRequest);
 }

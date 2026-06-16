@@ -1,11 +1,9 @@
 package com.praveen.simulator.kafka.events;
 
-import com.praveen.simulator.dto.DCSRequest;
 import com.praveen.simulator.dto.DocumentDetails;
 import com.praveen.simulator.entity.*;
 import com.praveen.simulator.helper.CommonMapper;
 import com.praveen.simulator.helper.Utils;
-import com.praveen.simulator.repository.AppRepository;
 import com.praveen.simulator.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +40,8 @@ public class KafkaHelper {
 
     public DCSRequestEvent prepareDcsRequestEvent(PNR pnr) {
         log.info("Preparing DCS Request for PNR : {}", pnr.getPnrId());
-        DCSRequest dcsRequest = DCSRequest.builder().flightId(pnr.getFlight().getFlightId()).pnrId(pnr.getPnrId()).passengerId(String.valueOf(pnr.getPassenger().getId())).
+        return DCSRequestEvent.builder().flightId(pnr.getFlight().getFlightId()).pnrId(pnr.getPnrId()).passengerId(String.valueOf(pnr.getPassenger().getId())).
                 passengerName(pnr.getPassenger().getFullName()).build();
-        return commonMapper.toDcsRequestEvent(dcsRequest);
     }
 
 }
