@@ -1,7 +1,7 @@
 package com.praveen.simulator.service;
 
 import com.praveen.simulator.entity.APP;
-import com.praveen.simulator.repository.APPRepository;
+import com.praveen.simulator.repository.AppRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class AppService {
 
-    private final APPRepository appRepository;
+    private final AppRepository appRepository;
 
     /**
      * Fetch all historical and current APP data records.

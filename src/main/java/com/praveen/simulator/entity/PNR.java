@@ -30,10 +30,11 @@ public class PNR {
     private TicketStatus ticketStatus;
     @Enumerated(value = EnumType.STRING)
     private Channel bookingChannel;
+    @Enumerated(value = EnumType.STRING)
+    private BookingStatus bookingStatus;
     private LocalDateTime bookingDateTime;
     private BookingClass bookingClass;
     private String agencyId;
-    private String bookingStatus;
     private String transactionId;
     private double totalAmount;
     private String currency;

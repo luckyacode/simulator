@@ -4,8 +4,9 @@ import com.praveen.simulator.dto.DCSRequest;
 import com.praveen.simulator.dto.DocumentDetails;
 import com.praveen.simulator.entity.*;
 import com.praveen.simulator.helper.Utils;
-import com.praveen.simulator.repository.APPRepository;
+import com.praveen.simulator.repository.AppRepository;
 import com.praveen.simulator.service.CheckInResponseService;
+import com.praveen.simulator.service.GovernmentClearanceService;
 import com.praveen.simulator.service.PnrService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,9 @@ import java.util.Optional;
 public class KafkaConsumer {
     private final CheckInResponseService checkInResponseService;
     private final PnrService pnrService;
-    private final APPRepository appRepository;
+    private final AppRepository appRepository;
     private final KafkaPublisher kafkaPublisher;
+    private final GovernmentClearanceService governmentClearanceService;
 
     @KafkaListener(topics = "checkin-response", groupId = "group-id2")
     public void consumingCheckInRequest(@Payload String response, @Header(value = KafkaHeaders.RECEIVED_KEY) String clearanceId) {
@@ -33,7 +35,7 @@ public class KafkaConsumer {
         CheckInResponse checkInResponse = Utils.jsonToObject(response, CheckInResponse.class);
         log.info("Successfully Message Received : {}", checkInResponse);
         checkInResponseService.add(checkInResponse);
-        pnrService.handleVettingResult(checkInResponse);
+        governmentClearanceService.handleVettingResult(checkInResponse);
         PNR pnr = pnrService.getPnrById(checkInResponse.getPnrId());
         FlightManifest flight = pnr.getFlight();
 

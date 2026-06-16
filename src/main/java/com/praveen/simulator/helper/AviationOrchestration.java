@@ -11,7 +11,6 @@ import com.praveen.simulator.service.CheckInResponseService;
 import com.praveen.simulator.service.PassengerService;
 import com.praveen.simulator.service.PnrService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
