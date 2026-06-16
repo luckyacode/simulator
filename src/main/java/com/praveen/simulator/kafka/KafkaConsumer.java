@@ -6,7 +6,9 @@ import com.praveen.simulator.kafka.events.KafkaGroups;
 import com.praveen.simulator.kafka.events.KafkaTopics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class KafkaConsumer {
     private final KafkaService kafkaService;
 
+    @RetryableTopic(attempts = "3" )
     @KafkaListener(topics = KafkaTopics.CheckIn.RESPONSES, groupId = KafkaGroups.DCS_SIMULATOR_GROUP)
     public void consumingCheckInRequest(@Payload String response, @Header(value = KafkaHeaders.RECEIVED_KEY) String pnrId) {
         log.info("✓ Received CheckInResponse event via Kafka Broker partition. PNR Key: {}, Action: {}", pnrId, response);
@@ -25,4 +28,17 @@ public class KafkaConsumer {
         kafkaService.processCheckInResponse(checkInResponseEvent);
     }
 
+    @DltHandler
+    public void handleCheckInRequestsDlt(
+            @Payload String failedEvent,
+            @Header(KafkaHeaders.RECEIVED_KEY) String pnrId,
+            @Header(KafkaHeaders.RECEIVED_TOPIC) String deadTopic,
+            @Header(name = "X-Exception-Message", required = false) String errorMessage) {
+
+        log.error("🚨🛑 AIRPORT OPERATIONS ALARM: Check-in processing permanently failed!");
+        log.error("-> Failed PNR Locator: {}", pnrId);
+        log.error("-> Source Dead Topic : {}", deadTopic);
+        log.error("-> Failure Reason    : {}", errorMessage);
+
+    }
 }
