@@ -5,6 +5,7 @@ import com.praveen.simulator.entity.*;
 import com.praveen.simulator.helper.CommonMapper;
 import com.praveen.simulator.helper.Utils;
 import com.praveen.simulator.kafka.events.*;
+import com.praveen.simulator.repository.DlqTopicRepository;
 import com.praveen.simulator.service.CheckInResponseService;
 import com.praveen.simulator.service.GovernmentClearanceService;
 import com.praveen.simulator.service.PnrService;
@@ -23,6 +24,7 @@ public class KafkaService {
     private final PnrService pnrService;
     private final GovernmentClearanceService governmentClearanceService;
     private final KafkaHelper kafkaHelper;
+    private final DlqTopicRepository dlqTopicRepository;
 
     public void processPnrEvent(PnrEvent pnrEvent) {
         if (pnrEvent == null || pnrEvent.pnrId() == null) {
@@ -68,6 +70,11 @@ public class KafkaService {
         DCSRequestEvent dcsRequestEvent = kafkaHelper.prepareDcsRequestEvent(pnr);
         log.info("Processing DCS request event : {}",dcsRequestEvent);
         processDcsMessage(dcsRequestEvent);
+    }
+
+    public void saveDlq(DlqTopic dlqTopic) {
+        dlqTopicRepository.save(dlqTopic);
+        log.info("DLQ Message Record commited in database");
     }
 
 
