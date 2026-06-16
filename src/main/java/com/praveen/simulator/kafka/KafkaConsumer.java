@@ -28,6 +28,7 @@ public class KafkaConsumer {
     private final AppRepository appRepository;
     private final KafkaPublisher kafkaPublisher;
     private final GovernmentClearanceService governmentClearanceService;
+    private final KafkaService kafkaService;
 
     @KafkaListener(topics = "checkin-response", groupId = "group-id2")
     public void consumingCheckInRequest(@Payload String response, @Header(value = KafkaHeaders.RECEIVED_KEY) String clearanceId) {
@@ -55,9 +56,7 @@ public class KafkaConsumer {
 
         DCSRequest dcsRequest = DCSRequest.builder().flightId(flight.getFlightId()).pnrId(checkInResponse.getPnrId()).passengerId(String.valueOf(pnr.getPassenger().getId())).
         passengerName(pnr.getPassenger().getFullName()).build();
-        String json = Utils.objectToJson(dcsRequest);
-        log.info("Message is processing for DCS : {}",json);
-        kafkaPublisher.sendDCSMessage(dcsRequest.getPnrId(),json);
+        kafkaService.processDcsMessage(dcsRequest);
     }
 
 

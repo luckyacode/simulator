@@ -52,7 +52,7 @@ public class AviationOrchestration {
         PnrEvent pnrEvent = commonMapper.toPnrEvent(pnrRequest);
 
         log.info("Publishing PNR Event to Kafka for PNR: {}, Transaction: {}", randomPnr, pnrRequest.getTransactionId());
-        kafkaService.sendPNRMessage(pnrEvent);
+        kafkaService.processPnrEvent(pnrEvent);
 
         return pnrRequest;
     }
@@ -82,7 +82,7 @@ public class AviationOrchestration {
         log.info("Passenger profile document data updated for ID: {}", passenger.getId());
 
         log.info("Dispatching async check-in transaction to Kafka with clearance reference: {}", checkInEvent.clearanceId());
-        kafkaService.checkInOnAirport(checkInEvent);
+        kafkaService.processCheckInEvent(checkInEvent);
     }
 
     /**
