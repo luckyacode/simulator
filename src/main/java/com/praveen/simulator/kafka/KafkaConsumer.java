@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -25,10 +26,11 @@ public class KafkaConsumer {
 
     @RetryableTopic(attempts = "3" )
     @KafkaListener(topics = KafkaTopics.CheckIn.RESPONSES, groupId = KafkaGroups.DCS_SIMULATOR_GROUP)
-    public void consumingCheckInRequest(@Payload String response, @Header(value = KafkaHeaders.RECEIVED_KEY) String pnrId) {
+    public void consumingCheckInRequest(@Payload String response, @Header(value = KafkaHeaders.RECEIVED_KEY) String pnrId, Acknowledgment ack) {
         log.info("✓ Received CheckInResponse event via Kafka Broker partition. PNR Key: {}, Action: {}", pnrId, response);
         CheckInResponseEvent checkInResponseEvent = Utils.jsonToObject(response, CheckInResponseEvent.class);
         kafkaService.processCheckInResponse(checkInResponseEvent);
+        ack.acknowledge();
     }
 
     @DltHandler
