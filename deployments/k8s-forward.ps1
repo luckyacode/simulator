@@ -5,6 +5,7 @@ $ForwardTargets = @(
     @{ Target = "svc/kibana-service";    LocalPort = 5601; RemotePort = 5601 }
     @{ Target = "svc/postgres-service";  LocalPort = 5432; RemotePort = 5432 }
     @{ Target = "deploy/simulator";      LocalPort = 8080; RemotePort = 8080 }
+    @{ Target = "svc/pgadmin-service";    LocalPort = 8088; RemotePort = 80 }
     @{ Target = "deploy/pnr-gateway";    LocalPort = 8087; RemotePort = 8087 }
 )
 

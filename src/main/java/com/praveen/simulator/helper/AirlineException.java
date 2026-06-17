@@ -23,6 +23,10 @@ public class AirlineException extends RuntimeException {
         return new AirlineException(message,HttpStatus.NOT_FOUND,e);
     }
 
+    public static AirlineException notFound(String message){
+        return new AirlineException(message,HttpStatus.NOT_FOUND);
+    }
+
     public static AirlineException serverError(String message,Exception e){
         return new AirlineException(message,HttpStatus.INTERNAL_SERVER_ERROR,e);
     }
@@ -37,5 +41,9 @@ public class AirlineException extends RuntimeException {
 
     public static AirlineException conflict(String message,Exception e){
         return new AirlineException(message,HttpStatus.CONFLICT,e);
+    }
+
+    public static AirlineException conflict(String message){
+        return new AirlineException(message,HttpStatus.CONFLICT);
     }
 }

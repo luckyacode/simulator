@@ -1,62 +1,54 @@
 package com.praveen.simulator.kafka;
 
-import com.praveen.simulator.dto.DCSRequest;
-import com.praveen.simulator.dto.DocumentDetails;
-import com.praveen.simulator.entity.*;
+import com.praveen.simulator.entity.DlqTopic;
 import com.praveen.simulator.helper.Utils;
-import com.praveen.simulator.repository.APPRepository;
-import com.praveen.simulator.service.CheckInResponseService;
-import com.praveen.simulator.service.PNRService;
+import com.praveen.simulator.kafka.events.CheckInResponseEvent;
+import com.praveen.simulator.kafka.events.KafkaGroups;
+import com.praveen.simulator.kafka.events.KafkaTopics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.time.Instant;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class KafkaConsumer {
-    private final CheckInResponseService checkInResponseService;
-    private final PNRService pnrService;
-    private final APPRepository appRepository;
-    private final KafkaPublisher kafkaPublisher;
+    private final KafkaService kafkaService;
 
-    @KafkaListener(topics = "checkin-response", groupId = "group-id2")
-    public void consumingCheckInRequest(@Payload String response, @Header(value = KafkaHeaders.RECEIVED_KEY) String clearanceId) {
-        log.info("CheckInResponse Message received with key {} and message : {}", clearanceId, response);
-        CheckInResponse checkInResponse = Utils.jsonToObject(response, CheckInResponse.class);
-        log.info("Successfully Message Received : {}", checkInResponse);
-        checkInResponseService.add(checkInResponse);
-        pnrService.handleVettingResult(checkInResponse);
-        PNR pnr = pnrService.getPNRById(checkInResponse.getPnrId());
-        FlightManifest flight = pnr.getFlight();
-
-        if (appRepository.findByGovernmentClearanceResponse_PassengerId(String.valueOf(pnr.getPassenger().getId())).isEmpty()) {
-            APP app = APP.builder().appId(Utils.generateUniqueId()).pnrId(checkInResponse.getPnrId()).
-                    flightId(flight.getFlightId()).departurePort(flight.getDepartureAirport()).
-                    arrivalPort(flight.getArrivalAirport()).
-                    passportNumber(Optional.ofNullable(pnr.getPassenger())
-                            .map(Passenger::getDocumentDetails)
-                            .map(DocumentDetails::getPassportNumber)
-                            .orElse(null)).
-                    createdDateTime(LocalDateTime.now()).governmentClearanceResponse(checkInResponse.getGovernmentClearanceResponse()).processingStatus(AppProcessingStatus.PROCESSED).build();
-            log.info(" NEW APP Message is saved : {}", appRepository.save(app));
-        } else {
-            log.info(" Existing APP Message is present");
-        }
-
-        DCSRequest dcsRequest = DCSRequest.builder().flightId(flight.getFlightId()).pnrId(checkInResponse.getPnrId()).passengerId(String.valueOf(pnr.getPassenger().getId())).
-        passengerName(pnr.getPassenger().getFullName()).build();
-        String json = Utils.objectToJson(dcsRequest);
-        log.info("Message is processing for DCS : {}",json);
-        kafkaPublisher.sendDCSMessage(dcsRequest.getPnrId(),json);
+    @RetryableTopic(attempts = "3" )
+    @KafkaListener(topics = KafkaTopics.CheckIn.RESPONSES, groupId = KafkaGroups.DCS_SIMULATOR_GROUP)
+    public void consumingCheckInRequest(@Payload String response, @Header(value = KafkaHeaders.RECEIVED_KEY) String pnrId) {
+        log.info("✓ Received CheckInResponse event via Kafka Broker partition. PNR Key: {}, Action: {}", pnrId, response);
+        CheckInResponseEvent checkInResponseEvent = Utils.jsonToObject(response, CheckInResponseEvent.class);
+        kafkaService.processCheckInResponse(checkInResponseEvent);
     }
 
+    @DltHandler
+    public void handleDlt(
+            @Payload String failedEvent,
+            @Header(KafkaHeaders.RECEIVED_KEY) String pnrId,
+            @Header(KafkaHeaders.RECEIVED_TOPIC) String deadTopic,
+            @Header(name = "X-Exception-Message", required = false) String errorMessage) {
 
+
+        log.error("🚨🛑 CRITICAL INTERCEPT: Appending message error signature to DB Triage Log table.");
+        log.error("-> Partition Key: {} | Failed Topic: {}", pnrId, deadTopic);
+        log.error("-> Failed PNR Locator: {}", pnrId);
+        log.error("-> Source Dead Topic : {}", deadTopic);
+        log.error("-> Failure Reason    : {}", errorMessage);
+        log.error("-> Failure Message    : {}", failedEvent);
+
+        DlqTopic dlqTopic = DlqTopic.builder().pnrId(pnrId!=null ? pnrId:"NO_PNR").
+                sourceTopic(deadTopic).deadLetterTopic(deadTopic).
+                reason(errorMessage).event(failedEvent).loggedAt(Instant.now()).resolved(Boolean.FALSE).build();
+        kafkaService.saveDlq(dlqTopic);
+    }
 }

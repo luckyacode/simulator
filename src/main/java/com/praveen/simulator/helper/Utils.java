@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Utils {
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     public static List<PassengerRequest> mapPassenger(List<String> list){
         return list.stream().map(line -> line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"))
                 .map(PassengerRequest::new).toList();
@@ -40,7 +40,6 @@ public class Utils {
 
     @SneakyThrows
     public static List<FlightDetail> fetchFlightFromFile(int size){
-//        Scanner scan = new Scanner(new File("files/international_flight_traffic.csv"));
         Scanner scan = new Scanner(new File("files/international_flight_traffic_updated.csv"));
         List<String> list = new ArrayList<>();
         scan.nextLine();

@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simulator    # Unique name identifying this deployment resource
+spec:
+  # Note: Manual 'replicas' field removed so it doesn't conflict with the HPA below!
+  selector:
+    matchLabels:
+      app: simulator   # How the deployment tracks which pods belong to it
+  template:
+    metadata:
+      labels:
+        app: simulator   # The label stamped on pods. MUST match the Service selector!
+    spec:
+      containers:
+        - name: simulator-container
+          image: simulator:5.1     # Docker image registry/name and immutable version tag
+          resources:
+            requests:
+              cpu: "200m"        # Baseline compute capacity requested from the node
+              memory: "512Mi"    # Initial RAM allocated for Spring Boot execution
+            limits:
+              cpu: "1"           # Throttling limit if the simulation spikes
+              memory: "1Gi"      # Max ceiling to prevent running out of cluster memory
+
+          # 1. BULK ENVIRONMENT VARIABLES (App Configurations)
+          envFrom:
+            - configMapRef:
+                name: app-config       # Auto-injects all non-sensitive app settings
+            - secretRef:
+                name: app-secrets   # Auto-injects all sensitive credentials (DB passwords, keys)
+
+          # 2. NETWORKING SINGLE SOURCE OF TRUTH (Infra Configuration)
+          env:
+            - name: SERVER_PORT
+              value: "8080" # Tells Spring Boot's embedded Tomcat exactly which port to listen on
+
+          # 3. CONTAINER NETWORK EXPOSURE
+          ports:
+            - name: http-port       # A friendly alias/label given to this specific port mapping
+              containerPort: 8080   # Opens this port on the container boundary (matches SERVER_PORT)
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pnr-gateway    # Unique name identifying this deployment resource
+spec:
+  # Note: Manual 'replicas' field removed so it doesn't conflict with the HPA below!
+  selector:
+    matchLabels:
+      app: pnr-gateway   # How the deployment tracks which pods belong to it
+  template:
+    metadata:
+      labels:
+        app: pnr-gateway   # The label stamped on pods. MUST match the Service selector!
+    spec:
+      containers:
+        - name: pnr-gateway-container
+          image: pnr-gateway:5.2     # Docker image registry/name and immutable version tag
+          resources:
+            requests:
+              cpu: "250m"        # Slightly higher CPU allocation to handle heavy transaction logic
+              memory: "512Mi"
+            limits:
+              cpu: "1.5"         # High bursting overhead for rapid multi-threaded JSON processing
+              memory: "1Gi"
+
+          # 1. BULK ENVIRONMENT VARIABLES (App Configurations)
+          envFrom:
+            - configMapRef:
+                name: app-config       # Auto-injects all non-sensitive app settings
+            - secretRef:
+                name: app-secrets   # Auto-injects all sensitive credentials (DB passwords, keys)
+
+          # 2. NETWORKING SINGLE SOURCE OF TRUTH (Infra Configuration)
+          env:
+            - name: SERVER_PORT
+              value: "8087" # Tells Spring Boot's embedded Tomcat exactly which port to listen on
+
+          # 3. CONTAINER NETWORK EXPOSURE
+          ports:
+            - name: http-port       # A friendly alias/label given to this specific port mapping
+              containerPort: 8087   # Opens this port on the container boundary (matches SERVER_PORT)
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: simulator-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: simulator
+  minReplicas: 2               # High Availability: Your default minimum deployment baseline
+  maxReplicas: 5               # Maximum ceiling cap to preserve nodes capacity
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 75  # Trigger scale out if average CPU utility climbs past 75%
+
+---
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: pnr-gateway-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: pnr-gateway
+  minReplicas: 2               # High Availability: Your default minimum deployment baseline
+  maxReplicas: 5              # Higher maximum cap since the gateway will process the bulk bookings
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70  # Aggressive scale out target to protect the transaction pipeline

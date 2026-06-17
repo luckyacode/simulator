@@ -25,6 +25,7 @@ public class PassengerRequest {
     private String phone;
     private String city;
     private String country;
+    private DocumentDetails documentDetails;
 
     public PassengerRequest(String[] csvRow) {
         this.fullName = csvRow[1].trim();

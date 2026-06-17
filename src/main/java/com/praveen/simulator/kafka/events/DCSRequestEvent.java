@@ -1,4 +1,4 @@
-package com.praveen.simulator.dto;
+package com.praveen.simulator.kafka.events;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DCSRequest {
+public class DCSRequestEvent {
     private String flightId;
     private String pnrId;
     private String passengerId;

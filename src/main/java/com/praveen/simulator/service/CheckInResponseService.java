@@ -5,6 +5,7 @@ import com.praveen.simulator.repository.CheckInResponseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ public class CheckInResponseService {
     private final CheckInResponseRepository checkInResponseRepository;
 
     public void add(CheckInResponse checkInResponse){
+        log.info("Processing checkInResponse for commit in database having PNR ID : {}",checkInResponse.getPnrId());
         CheckInResponse response = checkInResponseRepository.save(checkInResponse);
         log.info("CheckInResponse saved to db for clearance {} and passenger {} , response is : {} ",checkInResponse.getGovernmentClearanceResponse().getClearanceId(),checkInResponse.getGovernmentClearanceResponse().getPassengerId(),checkInResponse);
     }
