@@ -1,7 +1,7 @@
 package com.praveen.simulator.helper;
 
 import com.praveen.airline.avro.AvroCheckInRequest;
-import com.praveen.airline.avro.AvroCheckInResponseEvent;
+import com.praveen.airline.avro.AvroCheckInResponse;
 import com.praveen.airline.avro.AvroDcsRequestEvent;
 import com.praveen.airline.avro.AvroPnrEvent;
 import com.praveen.simulator.dto.*;
@@ -33,7 +33,7 @@ public interface CommonMapper {
     AvroPnrEvent toAvroPnrEvent(PnrEvent pnrEvent);
     AvroCheckInRequest toAvroCheckInRequest(CheckInEvent checkInEvent);
     AvroDcsRequestEvent toDcsRequestEvent(DCSRequestEvent dcsRequestEvent);
-    CheckInResponseEvent toCheckInResponseEvent(AvroCheckInResponseEvent avroCheckInResponseEvent);
+    CheckInResponseEvent toCheckInResponseEvent(AvroCheckInResponse avroCheckInResponseEvent);
     default Instant map(LocalDateTime localDateTime) {
         if (localDateTime == null) {
             return null;

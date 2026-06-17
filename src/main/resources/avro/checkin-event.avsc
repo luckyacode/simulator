@@ -31,7 +31,8 @@
             },
             {
               "name": "documentNumber",
-              "type": "string",
+              "type": ["null","string"],
+              "default": null,
               "doc": "Unique identifier sequence printed on the document."
             },
             {
