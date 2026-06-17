@@ -1,14 +1,23 @@
 package com.praveen.simulator.helper;
 
+import com.praveen.airline.avro.AvroCheckInRequest;
+import com.praveen.airline.avro.AvroCheckInResponseEvent;
+import com.praveen.airline.avro.AvroDcsRequestEvent;
+import com.praveen.airline.avro.AvroPnrEvent;
 import com.praveen.simulator.dto.*;
 import com.praveen.simulator.entity.CheckInResponse;
 import com.praveen.simulator.entity.FlightManifest;
 import com.praveen.simulator.entity.Passenger;
 import com.praveen.simulator.kafka.events.CheckInEvent;
 import com.praveen.simulator.kafka.events.CheckInResponseEvent;
+import com.praveen.simulator.kafka.events.DCSRequestEvent;
 import com.praveen.simulator.kafka.events.PnrEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Mapper(componentModel = "spring")
 public interface CommonMapper {
@@ -20,4 +29,16 @@ public interface CommonMapper {
     CheckInEvent toCheckInEvent(CheckInRequest checkInRequest, String clearanceId);
 
     CheckInResponse toCheckInResponse(CheckInResponseEvent checkInResponseEvent);
+
+    AvroPnrEvent toAvroPnrEvent(PnrEvent pnrEvent);
+    AvroCheckInRequest toAvroCheckInRequest(CheckInEvent checkInEvent);
+    AvroDcsRequestEvent toDcsRequestEvent(DCSRequestEvent dcsRequestEvent);
+    CheckInResponseEvent toCheckInResponseEvent(AvroCheckInResponseEvent avroCheckInResponseEvent);
+    default Instant map(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            return null;
+        }
+        return localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+    }
+
 }

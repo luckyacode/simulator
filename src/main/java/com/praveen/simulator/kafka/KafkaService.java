@@ -1,9 +1,9 @@
 package com.praveen.simulator.kafka;
 
-import com.praveen.simulator.kafka.events.PnrEvent;
-import com.praveen.simulator.entity.*;
+import com.praveen.simulator.entity.CheckInResponse;
+import com.praveen.simulator.entity.DlqTopic;
+import com.praveen.simulator.entity.PNR;
 import com.praveen.simulator.helper.CommonMapper;
-import com.praveen.simulator.helper.Utils;
 import com.praveen.simulator.kafka.events.*;
 import com.praveen.simulator.repository.DlqTopicRepository;
 import com.praveen.simulator.service.CheckInResponseService;
@@ -32,9 +32,8 @@ public class KafkaService {
             return;
         }
         log.info("Dispatching PnrEvent message to topic: {} for PNR: {}", KafkaTopics.PNR_EVENTS, pnrEvent.pnrId());
-        String json = Utils.objectToJson(pnrEvent);
-        log.info("Json value : {}", json);
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.PNR_EVENTS, pnrEvent.pnrId(), json);
+
+        kafkaPublisher.sendKafkaEvent(KafkaTopics.PNR_EVENTS, pnrEvent.pnrId(), commonMapper.toAvroPnrEvent(pnrEvent));
     }
 
     public void processCheckInEvent(CheckInEvent checkInEvent) {
@@ -43,8 +42,7 @@ public class KafkaService {
             return;
         }
         log.info("Dispatching CheckInEvent to topic: {} matching PNR: {} and Tracking Ref: {}", KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), checkInEvent.clearanceId());
-        String json = Utils.objectToJson(checkInEvent);
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), json);
+        kafkaPublisher.sendKafkaEvent(KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), commonMapper.toAvroCheckInRequest(checkInEvent));
     }
 
     public void processDcsMessage(DCSRequestEvent dcsRequestEvent) {
@@ -53,8 +51,7 @@ public class KafkaService {
             return;
         }
         log.info("Dispatching DCSRequestEvent message to topic: {} for PNR ID: {}", KafkaTopics.DCS_EVENTS, dcsRequestEvent.getPnrId());
-        String json = Utils.objectToJson(dcsRequestEvent);
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.DCS_EVENTS, dcsRequestEvent.getPnrId(), json);
+        kafkaPublisher.sendKafkaEvent(KafkaTopics.DCS_EVENTS, dcsRequestEvent.getPnrId(), commonMapper.toDcsRequestEvent(dcsRequestEvent));
     }
 
     @Transactional

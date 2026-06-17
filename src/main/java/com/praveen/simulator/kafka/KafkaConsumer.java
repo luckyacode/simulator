@@ -1,6 +1,8 @@
 package com.praveen.simulator.kafka;
 
+import com.praveen.airline.avro.AvroCheckInResponseEvent;
 import com.praveen.simulator.entity.DlqTopic;
+import com.praveen.simulator.helper.CommonMapper;
 import com.praveen.simulator.helper.Utils;
 import com.praveen.simulator.kafka.events.CheckInResponseEvent;
 import com.praveen.simulator.kafka.events.KafkaGroups;
@@ -23,15 +25,17 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class KafkaConsumer {
     private final KafkaService kafkaService;
+    private final CommonMapper commonMapper;
 
     @RetryableTopic(attempts = "3" )
     @KafkaListener(topics = KafkaTopics.CheckIn.RESPONSES, groupId = KafkaGroups.DCS_SIMULATOR_GROUP)
-    public void consumingCheckInRequest(@Payload String response, @Header(value = KafkaHeaders.RECEIVED_KEY) String pnrId, Acknowledgment ack) {
+    public void consumingCheckInRequest(@Payload AvroCheckInResponseEvent response, @Header(value = KafkaHeaders.RECEIVED_KEY) String pnrId, Acknowledgment ack) {
         log.info("✓ Received CheckInResponse event via Kafka Broker partition. PNR Key: {}, Action: {}", pnrId, response);
-        CheckInResponseEvent checkInResponseEvent = Utils.jsonToObject(response, CheckInResponseEvent.class);
+        CheckInResponseEvent checkInResponseEvent = commonMapper.toCheckInResponseEvent(response);
         kafkaService.processCheckInResponse(checkInResponseEvent);
         ack.acknowledge();
     }
+
 
     @DltHandler
     public void handleDlt(
