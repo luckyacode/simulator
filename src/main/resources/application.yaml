@@ -19,7 +19,7 @@ spring:
     hikari:
       maximum-pool-size=4:
   kafka:
-    bootstrap-servers: ${kafka-host:localhost}:${kafka-port:9092}
+    bootstrap-servers: kafka-service:29092
 
     consumer:
       isolation-level: read_committed
