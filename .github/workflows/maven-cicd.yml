@@ -55,7 +55,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 🌟 Changed: Log into GitHub Container Registry instead of Docker Hub
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -63,12 +62,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 🌟 Changed: Convert repository name to lowercase to prevent GHCR naming errors
+      # 🌟 Fixed: Point target directly to repository root package path
       - name: Extract Metadata (Tagging)
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}/appthree
+          images: ghcr.io/${{ github.repository }}
           tags: |
             type=raw,value=latest
             type=sha,format=short
@@ -98,20 +97,22 @@ jobs:
           script: |
             echo "Successfully connected to Oracle Cloud Instance!"
             
-            # 🌟 Changed: Convert repository path to lowercase to safely pull from GHCR
+            # 🌟 Fixed: Strip out the /appthree suffix so the string maps precisely to simulator path
             REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-            IMAGE_URI="ghcr.io/${REPO_LOWER}/appthree:latest"
+            IMAGE_URI="ghcr.io/${REPO_LOWER}:latest"
+            
+            echo "Targeting Image Registry: ${IMAGE_URI}"
             
             # 1. Pull the newly baked image down from GitHub Packages
             sudo docker pull ${IMAGE_URI}
             
             # 2. Stop and remove the old running container if it exists
-            sudo docker stop appthree-container || true
-            sudo docker rm appthree-container || true
+            sudo docker stop simulator-container || true
+            sudo docker rm simulator-container || true
             
             # 3. Spin up the new container mapped to server port 8080
             sudo docker run -d \
-              --name appthree-container \
+              --name simulator-container \
               -p 8080:8080 \
               --restart always \
               ${IMAGE_URI}
