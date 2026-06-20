@@ -1,0 +1,104 @@
+version: '3.9'
+
+services:
+
+  # --- DATABASE INFRASTRUCTURE ---
+  postgres-service:
+    image: postgres:16-alpine
+    container_name: postgres-service
+    command: ["postgres", "-c", "max_connections=300"]
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_DB: pnr_db
+      POSTGRES_PASSWORD: pnr_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  pgadmin-service:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin-service
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "30083:80"
+    depends_on:
+      - postgres-service
+    restart: unless-stopped
+
+  # --- EVENT STREAMING INFRASTRUCTURE ---
+  kafka-service:
+    image: apache/kafka:latest
+    container_name: kafka-service
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,INTERNAL://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,INTERNAL://kafka-service:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-service:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CLUSTER_ID: praveen_kafka_cluster_2026
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    restart: unless-stopped
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:8.1.0
+    container_name: schema-registry
+    ports:
+      - "9081:9081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:9081'
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://kafka-service:29092'
+    depends_on:
+      - kafka-service
+    restart: unless-stopped
+
+  # --- OBSERVABILITY / ELK STACK ---
+  elasticsearch:
+    image: elasticsearch:7.17.10
+    container_name: elasticsearch-service
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    restart: unless-stopped
+
+  logstash:
+    image: logstash:7.17.10
+    container_name: logstash-service
+    command: >
+      bash -c "echo 'input { tcp { port => 5000 codec => json } }
+      output { elasticsearch { hosts => [\"elasticsearch:9200\"] index => \"springboot-logs-%{+YYYY.MM.dd}\" } }' > /usr/share/logstash/pipeline/logstash.conf
+      && bin/logstash"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  kibana:
+    image: kibana:7.17.10
+    container_name: kibana-service
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+# --- GLOBAL VOLUMES ---
+volumes:
+  postgres_data:
