@@ -15,7 +15,7 @@ jobs:
   # --- STAGE 1: BUILD & PUSH DOCKER IMAGE TO GHCR ---
   build-and-ship:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/devonly' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/devonly-specific' && github.event_name == 'push'
 
     steps:
       - name: Checkout Code
