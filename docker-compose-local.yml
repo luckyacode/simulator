@@ -16,18 +16,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
-  pgadmin-service:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin-service
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "30083:80"
-    depends_on:
-      - postgres-service
-    restart: unless-stopped
-
   kafka-service:
     image: apache/kafka:latest
     container_name: kafka-service
