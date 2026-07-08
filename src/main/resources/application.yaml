@@ -11,7 +11,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url: jdbc:postgresql://${db-host:localhost}:${DB_PORT:5432}/${postgres-db:pnr_db}
+    url: jdbc:postgresql://${db-host:129.151.21.182}:${DB_PORT:5432}/${postgres-db:pnr_db}
     driver-class-name: org.postgresql.Driver
     username: ${postgres-user:root}
     password: ${postgres-password:pnr_db}
@@ -19,7 +19,7 @@ spring:
       maximum-pool-size: 4 # 🌟 FIXED: Changed '=' syntax to a valid colon structure
 
   kafka:
-    bootstrap-servers: ${KAFKA_SERVERS:kafka-service:29092}
+    bootstrap-servers: ${KAFKA_SERVERS:129.151.21.182:29092}
 
     consumer:
       isolation-level: read_committed
@@ -30,7 +30,7 @@ spring:
       properties:
         # 🌟 FIXED: Configured the correct property suffix key for the delegate class execution
         spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-        spring.json.trusted.packages: "com.praveen.*,com.pnr.*"
+        spring.json.trusted.packages: "*"
 
     producer:
       acks: all
