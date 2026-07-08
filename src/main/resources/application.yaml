@@ -15,42 +15,42 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${postgres-user:root}
     password: ${postgres-password:pnr_db}
+# Cap individual pods so they don't hoard connections
     hikari:
-      maximum-pool-size: 4 # 🌟 FIXED: Changed '=' syntax to a valid colon structure
-
+      maximum-pool-size=4:
   kafka:
-    bootstrap-servers: ${KAFKA_SERVERS:kafka-service:29092}
+    bootstrap-servers: kafka-service:29092
 
     consumer:
       isolation-level: read_committed
       enable-auto-commit: false
-      # 🌟 FIXED: Swapped out Confluent Avro Deserializers for Spring's ErrorHandling JSON stack
+#      auto-offset-reset: earliest
+#      group-id: skyflying-eos-group # Make sure this is present
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       properties:
-        # 🌟 FIXED: Configured the correct property suffix key for the delegate class execution
-        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
-        spring.json.trusted.packages: "com.praveen.*,com.pnr.*"
-
+        spring.deserializer.key.delegate: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate: io.confluent.kafka.serializers.KafkaAvroDeserializer
+        schema.registry.url: http://localhost:9081
+        specific.avro.reader: true
     producer:
       acks: all
       transaction-id: tx-dcs-booking-
-      # 🌟 FIXED: Swapped out Avro Serializer for the standard Jackson JSON engine
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        schema.registry.url: http://localhost:9081
     template:
       observation-enabled: true
     listener:
       ack-mode: MANUAL_IMMEDIATE
       observation-enabled: true
-
 management:
   tracing:
     enabled: true
     sampling:
       probability: 1.0
-  zipkin: # 🌟 FIXED: Changed 'Zipkin' to lowercase 'zipkin' for proper Spring Boot recognition
+  Zipkin:
     tracing:
       export:
         enabled: false
@@ -64,11 +64,9 @@ management:
         enabled: true
   metrics:
     tags:
-      application: simulator # 🌟 FIXED: Changed from 'api-pnr-gateway' to match this app's name
-
+      application: api-pnr-gateway
 server:
-  port: ${SERVER_PORT:8080} # 🌟 Note: This microservice is mapped to bind on port 8080
-
+  port: ${SERVER_PORT:8080}
 logging:
   pattern:
     correlation: "[%X{traceId:-},%X{spanId:-}]"
