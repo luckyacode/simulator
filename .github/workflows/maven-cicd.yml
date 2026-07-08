@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ "devonly-specific" ]
 
-# Grant permissions required to push images to GitHub Packages (GHCR)
 permissions:
   contents: read
   packages: write
@@ -20,6 +19,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      # 🌟 STEP 1: Set up Docker Buildx (Required for advanced caching features)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -37,6 +40,7 @@ jobs:
             type=raw,value=latest
             type=sha,format=short
 
+      # 🌟 STEP 2: Build and Push with GitHub Native Cache Configured
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
@@ -45,12 +49,15 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # These two lines manage the layer cache across workflow executions
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   # --- STAGE 2: AUTOMATED DEPLOY TO ORACLE CLOUD ---
   deploy-to-oci:
     needs: build-and-ship
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/devonly' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/devonly-specific' && github.event_name == 'push'
 
     steps:
       - name: Execute Remote SSH Commands
@@ -62,23 +69,18 @@ jobs:
           script: |
             echo "Successfully connected to Oracle Cloud Instance!"
             
-            # Convert repo path to lowercase for GHCR compliance
             REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
             IMAGE_URI="ghcr.io/${REPO_LOWER}:latest"
             
             echo "Targeting Image Registry: ${IMAGE_URI}"
             
-            # Authenticate the OCI runtime environment to pull from GHCR
             echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             
-            # 1. Pull the newly baked image down from GitHub Packages
             sudo docker pull ${IMAGE_URI}
             
-            # 2. Stop and remove the old running container if it exists
             sudo docker stop simulator-container || true
             sudo docker rm simulator-container || true
             
-            # 3. Spin up the new container mapped to server port 8080
             sudo docker run -d \
               --name simulator-container \
               --network praveen_default \
@@ -87,9 +89,8 @@ jobs:
               --restart always \
               ${IMAGE_URI}
             
-            # 4. Clean up dangling old images to preserve storage space
             sudo docker image prune -f
             sudo docker logout ghcr.io
             
-            echo "Deployment completed successfully! Running containers:"
+            echo "Deployment completed successfully!"
             sudo docker ps
