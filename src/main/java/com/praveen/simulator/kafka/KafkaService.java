@@ -33,7 +33,7 @@ public class KafkaService {
         }
         log.info("Dispatching PnrEvent message to topic: {} for PNR: {}", KafkaTopics.PNR_EVENTS, pnrEvent.pnrId());
 
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.PNR_EVENTS, pnrEvent.pnrId(), pnrEvent);
+        kafkaPublisher.sendKafkaEvent(KafkaTopics.PNR_EVENTS, pnrEvent.pnrId(), commonMapper.toAvroPnrEvent(pnrEvent));
     }
 
     public void processCheckInEvent(CheckInEvent checkInEvent) {
@@ -42,7 +42,7 @@ public class KafkaService {
             return;
         }
         log.info("Dispatching CheckInEvent to topic: {} matching PNR: {} and Tracking Ref: {}", KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), checkInEvent.clearanceId());
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), checkInEvent);
+        kafkaPublisher.sendKafkaEvent(KafkaTopics.CheckIn.REQUESTS, checkInEvent.pnrId(), commonMapper.toAvroCheckInRequest(checkInEvent));
     }
 
     public void processDcsMessage(DCSRequestEvent dcsRequestEvent) {
@@ -51,7 +51,7 @@ public class KafkaService {
             return;
         }
         log.info("Dispatching DCSRequestEvent message to topic: {} for PNR ID: {}", KafkaTopics.DCS_EVENTS, dcsRequestEvent.getPnrId());
-        kafkaPublisher.sendKafkaEvent(KafkaTopics.DCS_EVENTS, dcsRequestEvent.getPnrId(), dcsRequestEvent);
+        kafkaPublisher.sendKafkaEvent(KafkaTopics.DCS_EVENTS, dcsRequestEvent.getPnrId(), commonMapper.toDcsRequestEvent(dcsRequestEvent));
     }
 
     @Transactional
